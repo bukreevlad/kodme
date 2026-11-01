@@ -1,0 +1,229 @@
+# podman-compose.yml
+services:
+
+  # -----------------------------------
+  # 1. Сервис для PostgreSQL
+  db:
+    image: docker.io/postgres:18
+    container_name: postgres
+    restart: always
+    mem_limit: 2g  # Лимит памяти (подгоните под RAM сервера)
+    networks:
+      - data
+    environment:
+      - POSTGRES_USER=kodme
+      # ДУБЛИКАТ: значение обязано совпадать с `database.password`
+      # в ./kodme/config.yaml — иначе сервер не подключится к БД.
+      # ЭТАЛОН — это поле: оно применяется при первой инициализации тома (initdb).
+      - POSTGRES_PASSWORD=__DB_PASSWORD__
+      - POSTGRES_DB=kodme
+    volumes:
+      - ./postgres/postgres-init:/docker-entrypoint-initdb.d  # Первоначальная конфигурации БД
+      - postgres-data:/var/lib/postgresql  # Папка для хранения данных БД
+
+  # -----------------------------------
+  # 2. Сервис для SRS6
+  srs:
+    image: docker.io/ossrs/srs:6
+    container_name: srs
+    restart: always
+    mem_limit: 512m  # Лимит памяти
+    ports:
+      - "1935:1935"                    # RTMP ingest (публичный)
+      - "8000:8000/udp"                # RTC (публичный)
+      - "8000:8000/tcp"                # RTC (публичный)
+    volumes:
+      - ./srs/kodme.conf:/srs/trunk/conf/kodme.conf # Конфигурация srs
+    command: ./objs/srs -c /srs/trunk/conf/kodme.conf  # Запуск srs
+    networks:
+      - app
+
+  # -----------------------------------
+  # 3. Сервис для LiveKit
+  livekit:
+    image: docker.io/livekit/livekit-server:latest
+    container_name: livekit
+    restart: always
+    mem_limit: 1g  # Лимит памяти
+    depends_on:
+      redis:
+        condition: service_healthy
+    # Host-режим обязателен для rootless podman: rootlessport не может
+    # опубликовать диапазон RTC UDP (50000-60000) — падает с EADDRINUSE
+    # из-за пересечения с диапазоном эфемерных портов Linux.
+    network_mode: host
+    volumes:
+      - ./livekit/livekit.yaml:/etc/livekit.yaml:Z
+    command: --config /etc/livekit.yaml
+
+  # -----------------------------------
+  # 4. Сервис LiveKit Ingress
+  livekit-ingress:
+    image: docker.io/livekit/ingress:latest
+    container_name: livekit-ingress
+    restart: always
+    mem_limit: 1g  # Лимит памяти
+    depends_on:
+      redis:
+        condition: service_healthy
+      livekit:
+        condition: service_started
+    # Host-режим: см. комментарий в livekit (rootlessport не тянет UDP-диапазоны).
+    network_mode: host
+    volumes:
+      - ./livekit/ingress.yaml:/etc/ingress.yaml:Z
+    command: --config /etc/ingress.yaml
+
+  # -----------------------------------
+  # 5. Сервис Redis (необходим для работы LiveKit Ingress)
+  redis:
+    image: docker.io/redis:7-alpine
+    container_name: redis
+    restart: always
+    mem_limit: 256m  # Лимит памяти
+    # Публикуем только на loopback хоста: livekit/ingress работают в host-режиме
+    # и обращаются к Redis по 127.0.0.1:6379
+    ports:
+      - "127.0.0.1:6379:6379"
+    # Включаем AOF persistence и пароль.
+    # ДУБЛИКАТ (в `command` ниже и в `healthcheck.test`): значение обязано
+    # совпадать с `redis.password` в ./livekit/livekit.yaml и ./livekit/ingress.yaml.
+    command: redis-server --appendonly yes --requirepass __REDIS_PASSWORD__
+    healthcheck:
+      # ДУБЛИКАТ: пароль тот же, что в `command` выше (и в livekit/ingress.yaml).
+      test: ["CMD", "redis-cli", "-a", "__REDIS_PASSWORD__", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - ./redis/data:/data:Z
+    networks:
+      - data
+
+  # -----------------------------------
+  # 6. Сервис для kodme
+  kodme:
+    image: registry.kodme.ru/kodme:latest
+    container_name: kodme
+    # Публикуем только на loopback хоста: livekit в host-режиме шлёт
+    # webhook-уведомления на http://127.0.0.1:3000
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - LOG_LEVEL=INFO # DEBUG, INFO, WARN, ERROR, OFF
+      - ENABLE_FILE_LOG=true
+      - SPLIT_LOG_FILE_LEVEL=false # Один общий файл на день: app-2026-10-07.log
+      - LOG_RETENTION_DAYS=14 # Удалять логи старше 14 дней
+    restart: always
+    mem_limit: 1g  # Лимит памяти
+    userns: "keep-id"  # Работаем под пользователем который запускает контейнер
+    volumes:
+      - ./kodme/logs:/app/logs  # Папка для файлов с логами
+      - ./kodme/config.yaml:/app/config.yaml  # Файл конфигурации приложения
+      - ./nginx/html/web-client:/app/dist # Статика (клиент)
+      - ./postgres/backup:/app/postgres/backup # Для создания копий БД
+    networks:
+      app:
+        ipv4_address: 10.90.0.20
+      data: {}
+
+  # -----------------------------------
+  # 6.1. Медиа-воркер: тот же образ kodme, но с ролью media-worker
+  #   (отдельный процесс обработки медиа; общается с сервером только через
+  #   очередь в PostgreSQL)
+  kodme-media-worker:
+    image: registry.kodme.ru/kodme:latest
+    container_name: kodme-media-worker
+    command: media-worker  # аргумент в entrypoint.sh -> bun /app/bundle/app.js media-worker
+    environment:
+      - LOG_LEVEL=INFO # DEBUG, INFO, WARN, ERROR, OFF
+      - ENABLE_FILE_LOG=true
+      - SPLIT_LOG_FILE_LEVEL=false # Один общий файл на день: app-2026-10-07.log
+      - LOG_RETENTION_DAYS=14 # Удалять логи старше 14 дней
+    restart: always
+    mem_limit: 1g  # Лимит памяти (декод/транскодинг тяжёлый — подгоните под RAM)
+    userns: "keep-id"  # Работаем под пользователем который запускает контейнер
+    volumes:
+      - ./kodme/media-worker/logs:/app/logs  # Свой каталог логов (не общий с сервером)
+      - ./kodme/config.yaml:/app/config.yaml  # Файл конфигурации приложения
+    networks:
+      - app
+      - data
+
+  # -----------------------------------
+  # 7. Сервис для Nginx
+  nginx:
+    image: docker.io/nginx:alpine
+    container_name: nginx
+    depends_on:
+      - srs
+      - seaweedfs
+    mem_limit: 256m  # Лимит памяти
+    networks:
+      - app
+    ports:
+      - "9080:80"   # для боевого домена замените на "80:80"
+      - "9443:443"  # и на "443:443"
+    restart: always
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d  # Папка конфигураций сервера
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Конфигурация nginx
+      - ./nginx/ssl:/etc/nginx/ssl  # Папка ssl сертификатов
+      - ./nginx/html/web-client:/usr/share/nginx/html/web-client  # Папки клиента (статики)
+      - ./kodme/custom-theme.css:/usr/share/nginx/html/web-client/css/custom-theme.css  # Кастомная тема клиента
+      - ./nginx/logs:/var/log/nginx  # Папка логов nginx
+
+  # -----------------------------------
+  # 8. Сервис для Coturn
+  coturn:
+    image: docker.io/coturn/coturn:latest
+    container_name: coturn
+    restart: always
+    mem_limit: 512m  # Лимит памяти
+    network_mode: host
+    volumes:
+      - ./coturn/turnserver.conf:/etc/coturn/turnserver.conf  # Конфигурация coturn
+      - ./nginx/ssl:/etc/nginx/ssl  # Папка ssl сертификатов
+    command: |
+      sh -c "turnserver -c /etc/coturn/turnserver.conf"
+
+  # -----------------------------------
+  # 9. Хранилище объектов (S3) — SeaweedFS в режиме mini
+  seaweedfs:
+    image: docker.io/chrislusf/seaweedfs:4.39
+    container_name: seaweedfs
+    restart: always
+    networks:
+      - app
+    environment:
+      # ДУБЛИКАТ: значение обязано совпадать с `s3.accessKey`
+      # в ./kodme/config.yaml — иначе presigned-подписи не сойдутся.
+      AWS_ACCESS_KEY_ID: kodme
+      # ДУБЛИКАТ: значение обязано совпадать с `s3.secretKey`
+      # в ./kodme/config.yaml — иначе presigned-подписи не сойдутся.
+      AWS_SECRET_ACCESS_KEY: __S3_SECRET_KEY__
+    volumes:
+      - ./seaweedfs/data:/data:Z
+    command: >-
+      mini -dir=/data
+      -bucket=kodme
+      -ip.bind=0.0.0.0
+      -webdav=false
+      -master.telemetry=false
+
+# --- Сегментация сети (defense-in-depth) ---------------------------------
+# app  — приёмный сегмент: nginx и всё, к чему он проксирует (+ kodme).
+# data — сегмент данных: PostgreSQL и Redis; nginx сюда не заходит, поэтому даже
+#        при компрометации точки входа БД/кэш напрямую недоступны.
+networks:
+  app:
+    ipam:
+      config:
+        - subnet: 10.90.0.0/24
+  data:
+    ipam:
+      config:
+        - subnet: 10.90.1.0/24
+
+volumes:
+  postgres-data: {}  # База данных

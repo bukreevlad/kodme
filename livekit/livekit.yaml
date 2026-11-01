@@ -1,0 +1,60 @@
+port: 7880
+
+# Метрики Prometheus (host-режим: слушают на хосте, в публичной зоне firewall не открыты)
+prometheus:
+  port: 9090
+
+# Обязательный блок для взаимодействия с Ingress
+# LiveKit в host-режиме -> обращение к Redis через loopback хоста
+redis:
+  address: 127.0.0.1:6379
+  # Сгенерировать безопасный секрет можно командой: openssl rand -hex 32
+  # ДУБЛИКАТ: обязано совпадать с `--requirepass` / healthcheck `redis-cli -a`
+  # в ../compose.yml (сервис `redis`) и с `redis.password` в ../livekit/ingress.yaml.
+  password: __REDIS_PASSWORD__
+
+rtc:
+  port_range_start: 50000
+  port_range_end: 60000
+  tcp_port: 7881
+  use_external_ip: false       # Отключаем автоопределение через STUN
+  # ⚠️ ПЛЕЙСХОЛДЕР: замените на публичный IP вашего сервера
+  node_ip: "YOUR_PUBLIC_IP"     # Обязательно: без этого WebRTC не пройдёт NAT
+
+  stun_servers:
+    - domain.ru:3478
+
+  # ДУБЛИКАТ (оба блока turn_servers ниже): значение обязано совпадать со
+  # `static-auth-secret` в ../coturn/turnserver.conf и с `server.web_rtc.secret`
+  # в ../kodme/config.yaml — сервер Kodme выдаёт HMAC-креды этим секретом.
+  turn_servers:
+    - host: domain.ru
+      port: 5349
+      protocol: tls
+      secret: __TURN_SECRET__
+      ttl: 14400
+
+    - host: domain.ru
+      port: 3478
+      protocol: udp
+      secret: __TURN_SECRET__
+      ttl: 14400
+
+
+# ДУБЛИКАТ: `devkey` — значение API-секрета LiveKit (ключ называется «devkey»,
+# но секрет под ним — свой). Обязано совпадать с `livekit.api_secret` в
+# ../kodme/config.yaml и с `api_secret` в ../livekit/ingress.yaml.
+# ОБЯЗАНО ОТЛИЧАТЬСЯ от TURN-секрета выше.
+keys:
+  devkey: __LIVEKIT_API_SECRET__
+
+webhook:
+  api_key: devkey
+  urls:
+    - http://127.0.0.1:3000/api/v1/meet/hooks  # kodme опубликован на loopback хоста
+
+turn:
+  enabled: false
+
+logging:
+  level: info

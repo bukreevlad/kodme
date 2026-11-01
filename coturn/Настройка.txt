@@ -1,0 +1,11 @@
+# По умолчанию утилиты вроде Certbot или OpenSSL создают fullchain.pem с правами 644 (чтение всем), а privkey.pem — с правами 600 (чтение только для root). Контейнер Coturn внутри запускается не от root, а от ограниченного пользователя (обычно turnserver или nobody), поэтому у него нет прав прочитать приватный ключ.
+
+# Измените права на приватный ключ на хосте
+chmod 644 ./nginx/ssl/domain.ru/privkey.pem
+
+# Важно: Проверьте также права на сами папки по пути до файла.
+chmod 755 ./nginx/ssl/domain.ru
+chmod 755 ./nginx/ssl
+
+# Перезапустите Coturn
+podman-compose restart coturn

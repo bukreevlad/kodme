@@ -1,0 +1,49 @@
+# server-to-client: каналы
+
+События раздела `[channel]`. Основной объект — [Channel](../../objects/channel.md).
+
+## `[channel]: new` — новый канал у пользователя
+
+```json
+{
+  "type": "event",
+  "event": "[channel]: new",
+  "data": { "…": "Channel (get_data)" },
+  "timestamp": "2026-09-21T12:34:56.789Z"
+}
+```
+
+Доставляется в `user::<user_id>` пользователю, получившему канал
+(создал диалог/группу/канал, вступил по приглашению и т.п.).
+
+## `[channel]: update` — обновление канала
+
+```json
+{
+  "type": "event",
+  "event": "[channel]: update",
+  "data": { "…": "Channel (base)" },
+  "timestamp": "2026-09-21T12:34:56.789Z"
+}
+```
+
+Доставляется всем участникам в `channel::<channel_id>` при изменении настроек
+(название, аватар, ссылка, права и т.п.).
+
+## `[channel]: remove` — пользователь потерял канал
+
+```json
+{ "channel_id": "UUIDv7" }
+```
+
+- Всем участникам — в `channel::<channel_id>` (например, канал удалён).
+- Конкретному пользователю — в `user::<user_id>` (например, удалён из участников,
+  диалог удалён у одного из участников).
+
+## `[channel]: user typing` — набор текста
+
+```json
+{ "user_id": "UUIDv7", "channel_id": "UUIDv7", "display_name": "…" }
+```
+
+Доставляется участникам в `channel::<channel_id>`.

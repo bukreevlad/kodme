@@ -1,0 +1,40 @@
+api_key: "devkey"
+# ДУБЛИКАТ: обязано совпадать с `livekit.api_secret` в ../kodme/config.yaml
+#           и с `keys.devkey` в ../livekit/livekit.yaml.
+# НЕ совпадает с TURN-секретом (см. `static-auth-secret` в ../coturn/turnserver.conf).
+# Сгенерировать безопасный секрет можно командой: openssl rand -hex 32
+api_secret: "__LIVEKIT_API_SECRET__"
+# Ingress в host-режиме: livekit и redis доступны через loopback хоста
+ws_url: "ws://127.0.0.1:7880"
+
+redis:
+  address: "127.0.0.1:6379"
+  # ДУБЛИКАТ: обязано совпадать с `redis.password` в ../livekit/livekit.yaml
+  # и с `--requirepass` в ../compose.yml (сервис `redis`).
+  # Сгенерировать безопасный секрет можно командой: openssl rand -hex 32
+  password: "__REDIS_PASSWORD__"
+
+rtmp_port: 1936
+whip_port: 8085
+
+rtc_config:
+  tcp_port: 7884
+  udp_port: 7885
+  use_external_ip: false       # Отключаем автоопределение через STUN
+  # ⚠️ ПЛЕЙСХОЛДЕР: замените на публичный IP вашего сервера
+  node_ip: "YOUR_PUBLIC_IP"     # Обязательно: без этого WebRTC не пройдёт NAT
+  stun_servers:
+    - domain.ru:3478
+
+# ==============================================================================
+# ОГРАНИЧЕНИЕ НАГРУЗКИ НА ИНГРЕСС СЕРВИС
+# ==============================================================================
+cpu_cost:
+  url_cpu_cost: 2.0
+  rtmp_cpu_cost: 2.0
+  whip_cpu_cost: 2.0
+  whip_bypass_transcoding_input_cost: 0.1
+  max_cost: 12.0 # Лимит параллельных стримов в зависимости от мощности CPU
+
+logging:
+  level: info
