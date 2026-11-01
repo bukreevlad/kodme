@@ -103,7 +103,8 @@ services:
   # -----------------------------------
   # 6. Сервис для kodme
   kodme:
-    image: registry.kodme.ru/kodme:latest
+    # Запасной реестр: registry.kodme.ru/kodme:latest (pull без авторизации)
+    image: ghcr.io/bukreevlad/kodme:latest
     container_name: kodme
     # Публикуем только на loopback хоста: livekit в host-режиме шлёт
     # webhook-уведомления на http://127.0.0.1:3000
@@ -132,7 +133,8 @@ services:
   #   (отдельный процесс обработки медиа; общается с сервером только через
   #   очередь в PostgreSQL)
   kodme-media-worker:
-    image: registry.kodme.ru/kodme:latest
+    # Запасной реестр: registry.kodme.ru/kodme:latest (pull без авторизации)
+    image: ghcr.io/bukreevlad/kodme:latest
     container_name: kodme-media-worker
     command: media-worker  # аргумент в entrypoint.sh -> bun /app/bundle/app.js media-worker
     environment:

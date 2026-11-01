@@ -115,8 +115,8 @@ graph LR
 | Сервис | Образ | Назначение |
 | --- | --- | --- |
 | `nginx` | `nginx:alpine` | HTTPS, веб-клиент, проксирование API и медиа |
-| `kodme` | `registry.kodme.ru/kodme` | сервер платформы (API, WebSocket, боты) |
-| `kodme-media-worker` | `registry.kodme.ru/kodme` | обработка вложений (превью, транскодинг) |
+| `kodme` | `ghcr.io/bukreevlad/kodme` | сервер платформы (API, WebSocket, боты) |
+| `kodme-media-worker` | `ghcr.io/bukreevlad/kodme` | обработка вложений (превью, транскодинг) |
 | `db` | `postgres:18` | база данных платформы |
 | `redis` | `redis:7` | кэш и координация LiveKit |
 | `seaweedfs` | `seaweedfs` | объектное хранилище S3 (файлы, обложки, медиа) |
@@ -166,7 +166,7 @@ cd <папка-репозитория>
 # 3. Выпустите TLS-сертификаты (см. ниже) и положите в nginx/ssl/example.com/
 
 # 4. Запустите платформу
-podman pull registry.kodme.ru/kodme:latest
+podman pull ghcr.io/bukreevlad/kodme:latest
 podman-compose up -d
 ```
 
@@ -260,7 +260,7 @@ Certbot продлевает сертификаты автоматически �
 
 ```bash
 git pull
-podman pull registry.kodme.ru/kodme:latest
+podman pull ghcr.io/bukreevlad/kodme:latest
 podman-compose up -d --no-deps --force-recreate kodme kodme-media-worker
 ```
 
@@ -278,19 +278,27 @@ podman-compose up -d --no-deps --force-recreate kodme kodme-media-worker
 
 ## 📦 Образ сервера
 
-Образ платформы публикуется в реестре `registry.kodme.ru` и скачивается **без
+Образ платформы публикуется в GitHub Container Registry и скачивается **без
 авторизации**:
 
 ```bash
-podman pull registry.kodme.ru/kodme:latest
+podman pull ghcr.io/bukreevlad/kodme:latest
 ```
 
-Резервный путь на случай недоступности реестра — архив `kodme.tar.gz`
+Запасной реестр — `registry.kodme.ru` (тоже без авторизации). Если GHCR
+недоступен, подтяните образ оттуда и перетегируйте под имя из `compose.yml`:
+
+```bash
+podman pull registry.kodme.ru/kodme:latest
+podman tag registry.kodme.ru/kodme:latest ghcr.io/bukreevlad/kodme:latest
+```
+
+Резервный путь на случай недоступности обоих реестров — архив `kodme.tar.gz`
 со [страницы загрузок](https://kodme.ru):
 
 ```bash
 podman load -i kodme.tar.gz
-podman tag localhost/kodme:latest registry.kodme.ru/kodme:latest
+podman tag localhost/kodme:latest ghcr.io/bukreevlad/kodme:latest
 podman-compose up -d
 ```
 
@@ -327,9 +335,10 @@ Podman. Для Docker удалите эту строку (права на фай
 <details>
 <summary><b>Первый запуск: образ kodme не скачивается.</b></summary>
 
-Образ тянется из `registry.kodme.ru` без авторизации. Если реестр временно
-недоступен — используйте резервный путь с `kodme.tar.gz`
-(см. [«Образ сервера»](#-образ-сервера)) и повторите `podman-compose up -d`.
+Образ тянется из `ghcr.io/bukreevlad/kodme` без авторизации. Если реестр временно
+недоступен — используйте запасной `registry.kodme.ru` или резервный путь
+с `kodme.tar.gz` (см. [«Образ сервера»](#-образ-сервера)) и повторите
+`podman-compose up -d`.
 </details>
 
 <details>
