@@ -38,7 +38,9 @@
 - [broadcasts-members.md](./broadcasts-members.md) — участники трансляций.
 - [meets.md](./meets.md) — конференции.
 - [meets-members.md](./meets-members.md) — участники конференций.
-- [calls.md](./calls.md) — звонки.
+- [calls.md](./calls.md) — звонки (LiveKit).
+- [secret-chats.md](./secret-chats.md) — секретные чаты (сигналинг, присутствие).
+- [secret-calls.md](./secret-calls.md) — секретные звонки (сигналинг).
 - [bots.md](./bots.md) — боты.
 - [bots-apps.md](./bots-apps.md) — мини-приложения ботов.
 - [bot-forms.md](./bot-forms.md) — формы ботов.

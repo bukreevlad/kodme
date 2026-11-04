@@ -25,8 +25,11 @@ Push-кадры не имеют `callbackId` и не требуют ответа
 | `cast_online_chat::<cast_id>` | Сообщения чата онлайн-трансляции (`тип 7`). |
 | `meet::<meet_id>` | Вход/выход участников конференции (комната подписывается через `[meet]: open`). |
 
-Часть событий (`[call]: *`) доставляется **на конкретное
-соединение** собеседника, а не через комнату — они описаны в [calls.md](./calls.md).
+Часть событий доставляется **на конкретное устройство или соединение**
+получателя, а не через комнаты: `[call]: *` — участникам звонка,
+`[secret-chat]: *` и `[secret-call]: *` — устройствам (`target_device_id`);
+они описаны в [calls.md](./calls.md), [secret-chats.md](./secret-chats.md) и
+[secret-calls.md](./secret-calls.md).
 
 События, получаемые **самим ботом** через его соединение `/api/v1/wss/bot`
 (`[message]: new / update / click button`, `[form]: click button`),
@@ -45,7 +48,9 @@ Push-кадры не имеют `callbackId` и не требуют ответа
 | `[broadcast]: update` | [broadcasts.md](./broadcasts.md) |
 | `[meet]: user enter`, `[meet]: user exit` | [meets.md](./meets.md) |
 | `[bot][form]: new / update / close / replace` | [bots.md](./bots.md) |
-| `[call]: incoming / accept / decline / hangup / sdp` | [calls.md](./calls.md) |
+| `[call]: incoming` / `[call]: declined` | [calls.md](./calls.md) |
+| `[secret-chat]: incoming` / `accepted` / `signal` / `closed` / `presence` | [secret-chats.md](./secret-chats.md) |
+| `[secret-call]: signal` | [secret-calls.md](./secret-calls.md) |
 
 Прогресс загрузки файлов **не пушится**: шкалу клиент считает сам из своих
 XHR-запросов к S3, сервер хранит только отметки

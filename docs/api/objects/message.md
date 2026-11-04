@@ -73,9 +73,9 @@
 
 | `action_type` | Описание |
 | --- | --- |
-| `USER_JOINED_GROUP` | Участник вступил в группу. |
-| `USER_LEFT_GROUP` | Участник покинул группу. |
-| `USER_RENAMED_GROUP` | Группа переименована. |
+| `USER_JOINED_GROUP` | Участник вступил в группу (`action_payload: { user_name, user_id, is_bot }`). |
+| `USER_LEFT_GROUP` | Участник покинул группу (`action_payload: { user_name, user_id, is_bot }`). |
+| `USER_RENAMED_GROUP` | Группа переименована (`action_payload: { user_name, user_id, is_bot, group_name }`). |
 | `USER_ROLE_CHANGED_TO_MODERATOR_IN_GROUP` | Назначен модератор (`action_payload: { user_name, user_id, is_bot }`). |
 | `BROADCAST_STARTED` | Трансляция началась (`action_payload: { cast_id }`). |
 | `BROADCAST_ENDED` | Трансляция завершилась (`action_payload: { cast_id, started_at, ended_at }`). |

@@ -32,7 +32,7 @@ API состоит из двух частей:
   - [server-to-client/](./websocket/server-to-client/README.md) — события сервера (S2C).
 - [http/](./http/README.md) — HTTP API.
 - [objects/](./objects/README.md) — общие объекты (User, Channel, Message, ...).
-- [guides/](./guides/README.md) — руководства: пагинация, загрузка файлов, WebRTC-звонки, конференции.
+- [guides/](./guides/README.md) — руководства: пагинация, загрузка файлов, WebRTC (звонки, конференции, секретные чаты и звонки).
 
 ## Основные понятия
 
