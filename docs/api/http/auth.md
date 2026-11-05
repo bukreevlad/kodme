@@ -104,8 +104,7 @@
   "limits": {
     "files": { "max_size_bytes": 524288000, "max_files_per_message": 10, "max_file_name_length": 255, "max_metadata_bytes": 65536 },
     "messages": { "text_max_length": 4096, "max_buttons": 10, "max_buttons_per_row": 5, "max_button_text_length": 64 },
-    "stickers": { "max_size_bytes": 524288, "max_dimension": 512, "max_per_pak": 100, "pak_name_max_length": 64, "pak_about_max_length": 255 },
-    "media": { "thumbnail_sizes": [400, 800, 1200], "rendition_labels": ["360", "720", "1080"], "max_rendition_file_size_bytes": 104857600, "wave_form_points": 60, "max_duration_seconds": 86400, "max_dimension": 20000, "max_tag_length": 256, "placeholder_max_bytes": 4096 }
+    "stickers": { "max_size_bytes": 524288, "max_dimension": 512, "max_per_pak": 100, "pak_name_max_length": 64, "pak_about_max_length": 255 }
   },
   "file_types": {
     "image": { ".jpg": { "mimes": ["image/jpeg"], "default": "image/jpeg" } }
@@ -116,10 +115,11 @@
 - `ice_servers` генерируются **индивидуально для пользователя** (логин/пароль)
   — единственное место, откуда клиент получает ICE-серверы.
 - `limits` — пределы платформы: размеры и количество файлов, длина текста и
-  кнопок, лимиты стикеров, геометрия производных объектов. Это единственное
-  место, откуда клиент берёт «сколько можно»: ответы
-  `get upload attach url` / `get upload sticker url` этих значений не
-  содержат.
+  кнопок, лимиты стикеров. Это единственное место, откуда клиент берёт
+  «сколько можно»: ответы `get upload attach url` / `get upload sticker url`
+  этих значений не содержат. Геометрия производных объектов (превью,
+  рендеринги) в лимиты не входит: производные создаёт сервер, клиенту
+  известны только фактические значения из `metadata` документа.
 - `file_types` — справочник типов файлов (категория → расширение →
   допустимые MIME и MIME по умолчанию).
 

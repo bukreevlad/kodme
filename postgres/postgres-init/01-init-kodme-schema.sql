@@ -702,7 +702,8 @@ ALTER TABLE public.main_folders_channels OWNER TO kodme;
 
 CREATE TABLE public.media_processing_queue (
     document_id uuid CONSTRAINT media_processing_queue_document_id_not_null NOT NULL,
-    status character varying DEFAULT 'pending' CONSTRAINT media_processing_queue_status_not_null NOT NULL,
+    base_status character varying DEFAULT 'pending' CONSTRAINT media_processing_queue_base_status_not_null NOT NULL,
+    transcode_status character varying,
     attempts integer DEFAULT 0 CONSTRAINT media_processing_queue_attempts_not_null NOT NULL,
     error_code character varying,
     error_detail text,
@@ -713,7 +714,8 @@ CREATE TABLE public.media_processing_queue (
     created_at timestamp with time zone DEFAULT now() CONSTRAINT media_processing_queue_date_created_not_null NOT NULL,
     started_at timestamp with time zone,
     finished_at timestamp with time zone,
-    CONSTRAINT media_processing_queue_status_valid CHECK ((status = ANY (ARRAY['pending'::character varying, 'processing'::character varying, 'done'::character varying, 'failed'::character varying])))
+    CONSTRAINT media_processing_queue_base_status_valid CHECK (((base_status)::text = ANY (ARRAY['pending'::character varying, 'processing'::character varying, 'done'::character varying, 'failed'::character varying]))),
+    CONSTRAINT media_processing_queue_transcode_status_valid CHECK (((transcode_status)::text = ANY (ARRAY['not_required'::character varying, 'processing'::character varying, 'done'::character varying, 'failed'::character varying])))
 );
 
 
@@ -2156,7 +2158,7 @@ CREATE INDEX idx_comments_members_entity ON public.comments_members USING btree 
 -- Name: idx_media_processing_queue_status; Type: INDEX; Schema: public; Owner: kodme
 --
 
-CREATE INDEX idx_media_processing_queue_status ON public.media_processing_queue USING btree (status, created_at) WHERE (status IN ('pending'::character varying, 'processing'::character varying));
+CREATE INDEX idx_media_processing_queue_status ON public.media_processing_queue USING btree (base_status, created_at) WHERE (base_status IN ('pending'::character varying, 'processing'::character varying));
 
 
 --

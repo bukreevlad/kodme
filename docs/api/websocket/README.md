@@ -12,7 +12,7 @@
 
 Помимо клиентского соединения есть выделенный роут `/api/v1/wss/bot` для серверной
 логики ботов — см. **[bots-to-server](./bots-to-server/README.md)**. Бот управляет
-своими настройками, сообщениями и формами через собственные C2S-события
+своими настройками и сообщениями через собственные C2S-события
 и получает действия пользователей отдельным набором S2C-событий.
 
 ## Соглашения
@@ -68,7 +68,6 @@
 | [calls](./client-to-server/calls.md) | Звонки (WebRTC). |
 | [bots](./client-to-server/bots.md) | Боты. |
 | [bots-apps](./client-to-server/bots-apps.md) | Мини-приложения ботов. |
-| [bot-forms](./client-to-server/bot-forms.md) | Формы ботов. |
 | [themes](./client-to-server/themes.md) | Темы оформления. |
 | [storage](./client-to-server/storage.md) | Обработка файлов. |
 | [comments](./client-to-server/comments.md) | Комментарии под постами сообществ, реакции, вложения. |

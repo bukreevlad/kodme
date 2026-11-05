@@ -43,7 +43,6 @@
 - [secret-calls.md](./secret-calls.md) — секретные звонки (сигналинг).
 - [bots.md](./bots.md) — боты.
 - [bots-apps.md](./bots-apps.md) — мини-приложения ботов.
-- [bot-forms.md](./bot-forms.md) — формы ботов.
 - [themes.md](./themes.md) — темы.
 - [stickers.md](./stickers.md) — стикер-паки (паки, стикеры, подписки).
 - [storage.md](./storage.md) — файлы.

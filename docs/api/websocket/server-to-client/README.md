@@ -20,7 +20,7 @@ Push-кадры не имеют `callbackId` и не требуют ответа
 | --- | --- |
 | `user::<user_id>` | Личные события: сообщения диалогов (`тип 1, 5, 8`), статусы онлайн, новые/удалённые каналы, прочтения в диалогах. |
 | `channel::<channel_id>` | События каналов/групп: сообщения (`тип 2, 3, 4, 6, 7`), обновления канала, typing, участники. |
-| `bot::<bot_id>` | Сообщения и формы ботов. |
+| `bot::<bot_id>` | Сообщения ботов. |
 | `broadcast::<cast_id>` | Обновления статуса трансляции (комната подписывается событием `[broadcast]: open`). |
 | `cast_online_chat::<cast_id>` | Сообщения чата онлайн-трансляции (`тип 7`). |
 | `meet::<meet_id>` | Вход/выход участников конференции (комната подписывается через `[meet]: open`). |
@@ -32,7 +32,7 @@ Push-кадры не имеют `callbackId` и не требуют ответа
 [secret-calls.md](./secret-calls.md).
 
 События, получаемые **самим ботом** через его соединение `/api/v1/wss/bot`
-(`[message]: new / update / click button`, `[form]: click button`),
+(`[message]: new / update / click button`),
 описаны в [bots-to-server](../bots-to-server/README.md).
 
 ## Список событий
@@ -47,7 +47,6 @@ Push-кадры не имеют `callbackId` и не требуют ответа
 | `[user]: online status` | [users.md](./users.md) |
 | `[broadcast]: update` | [broadcasts.md](./broadcasts.md) |
 | `[meet]: user enter`, `[meet]: user exit` | [meets.md](./meets.md) |
-| `[bot][form]: new / update / close / replace` | [bots.md](./bots.md) |
 | `[call]: incoming` / `[call]: declined` | [calls.md](./calls.md) |
 | `[secret-chat]: incoming` / `accepted` / `signal` / `closed` / `presence` | [secret-chats.md](./secret-chats.md) |
 | `[secret-call]: signal` | [secret-calls.md](./secret-calls.md) |

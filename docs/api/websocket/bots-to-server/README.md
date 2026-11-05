@@ -8,11 +8,7 @@
 
 - управляет своими настройками (`[bot]`, `[broadcast]`), аватаром и меню;
 - отправляет и редактирует сообщения с кнопками, ставит реакции (`[message]`);
-- открывает формы и общается с пользователем через формы (`[form]`);
 - получает от сервера события о действиях пользователей (нажатия кнопок).
-
-События раздела `[bot-form]`, которые отправляет обычный клиент пользователя,
-пересылаются сервером именно в соединение бота (см. [bot-forms.md](../client-to-server/bot-forms.md)).
 
 ## Подключение и аутентификация
 
@@ -52,7 +48,6 @@
 | `[message]: new` | топик `bot::<bot_id>` | Новое сообщение в канале с ботом (см. [messages.md](./messages.md)). |
 | `[message]: update` | топик `bot::<bot_id>` | Изменение сообщения (см. [messages.md](./messages.md)). |
 | `[message]: click button` | в соединение | Нажатие кнопки под сообщением (см. [messages.md](./messages.md)). |
-| `[form]: click button` | в соединение | Нажатие кнопки формы (см. [forms.md](./forms.md)). |
 
 Событие `[message]: new` не приходит автору: сообщение, отправленное ботом,
 не дублируется ему самому.
@@ -64,7 +59,6 @@
 | [bots](./bots.md) | `[bot]: get upload avatar url`, `[bot]: save avatar`, `[bot]: set avatar`, `[bot]: set menu` | Аватар и меню бота. |
 | [broadcasts](./broadcasts.md) | `[broadcast]: create`, `get settings`, `get upload thumb url`, `save settings`, `save thumb`, `set thumb` | Трансляции. |
 | [messages](./messages.md) | `[message]: send`, `get data`, `get upload attach url`, `update`, `remove`, `send reaction` | Сообщения, вложения, реакции. |
-| [forms](./forms.md) | `[form]: send`, `update`, `close`, `replace` | Формы. |
 | [channels-members](./channels-members.md) | `[channel-member]: get info` | Информация об участнике канала. |
 | [storage](./storage.md) | — | У ботов нет событий `[storage]`: файлы грузятся через события своих разделов. |
 | [users](./users.md) | `[user]: get info` | Профили пользователей. |

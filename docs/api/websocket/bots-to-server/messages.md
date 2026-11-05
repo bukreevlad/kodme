@@ -127,12 +127,11 @@
 {
   "type": "event",
   "event": "[message]: new",
-  "data": { "…": "Message (meta) + user_socket_id" },
+  "data": { "…": "Message (meta)" },
   "timestamp": "2026-09-21T12:34:56.789Z"
 }
 ```
 
-`user_socket_id` — id соединения отправителя (для ответа через `[form]`).
 Сообщения, отправленные самим ботом, ему не приходят.
 
 ### `[message]: update` — изменение сообщения
