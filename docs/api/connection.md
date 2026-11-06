@@ -2,12 +2,15 @@
 
 Основной транспорт клиента — WebSocket-соединение с сервером.
 
-- URL: `wss://kodme.ru/api/v1/wss/client`
+- URL: `wss://domain.ru/api/v1/wss/client`
 - Авторизация: access-токен передаётся при установке соединения (websocket-протокол `Sec-WebSocket-Protocol` / заголовок `Authorization`), см. [authentication.md](./authentication.md).
 - Если соединение не авторизовано — сервер закрывает его с кодом **1008** (`Authentication failed`).
 
 > Помимо клиентского соединения есть **выделенное соединение бота**
-> `wss://kodme.ru/api/v1/wss/bot?token=...&botId=...` — см.
+> `wss://domain.ru/api/v1/wss/bot?botId=...`: секретный токен бота
+> передаётся заголовком `Sec-WebSocket-Protocol` (query-параметр
+> `?token=` устарел и не рекомендуется — query-строки попадают
+> в access-логи) — см.
 > [bots-to-server](./websocket/bots-to-server/README.md).
 
 После подключения сервер:

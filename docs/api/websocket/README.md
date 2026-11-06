@@ -1,6 +1,6 @@
 # WebSocket API
 
-Основной API платформы. Соединение: `wss://kodme.ru/api/v1/wss/client`.
+Основной API платформы. Соединение: `wss://domain.ru/api/v1/wss/client`.
 Описание транспорта, кадров и комнат — в [connection.md](../connection.md).
 
 ## Два потока событий

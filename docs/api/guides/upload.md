@@ -68,7 +68,7 @@ presigned **POST policy**. WebSocket-канал используется тол�
     {
       "path": "messages/attaches/<channel_id>/<uuid>/<uuid>.jpg",
       "kind": "original",
-      "url": "https://s3.kodme.ru/kodme",
+      "url": "https://s3.domain.ru/kodme",
       "fields": {
         "Content-Type": "image/jpeg",
         "bucket": "kodme",

@@ -8,7 +8,7 @@
   "created_user_id": "UUIDv7",
   "name": "Для друзей",
   "link": "abc123",
-  "url": "https://kodme.ru/+abc123",
+  "url": "https://domain.ru/+abc123",
   "max_users": 0,
   "expires_at": null,
   "is_deleted": false,

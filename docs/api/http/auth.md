@@ -287,7 +287,7 @@
 {
   "ceremony_id": "UUIDv7",
   "options": {
-    "rpId": "kodme.ru",
+    "rpId": "domain.ru",
     "challenge": "<base64url>",
     "timeout": 300000,
     "userVerification": "required",

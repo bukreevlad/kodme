@@ -96,7 +96,7 @@
 {
   "ceremony_id": "UUIDv7",
   "options": {
-    "rp": { "id": "kodme.ru", "name": "..." },
+    "rp": { "id": "domain.ru", "name": "..." },
     "user": { "id": "<base64url>", "name": "user@example.com", "displayName": "Иван" },
     "challenge": "<base64url>",
     "pubKeyCredParams": [ { "type": "public-key", "alg": -7 }, { "type": "public-key", "alg": -257 } ],
