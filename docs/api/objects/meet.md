@@ -31,7 +31,7 @@
 | `created_user_id` | `UUIDv7` | Владелец. |
 | `thumbnail_document_id` | `UUIDv7 \| null` | Id документа обложки. |
 | `thumbnail` | [File](./file.md) \| `null` | Обложка. |
-| `created_display_name` | `string` | Имя создателя. |
+| `created_display_name` | `string` | Имя создателя (у бота — его `link`). |
 
 ## Связанное
 
