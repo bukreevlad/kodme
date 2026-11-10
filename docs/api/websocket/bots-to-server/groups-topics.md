@@ -6,8 +6,9 @@
 [groups-topics.md](../client-to-server/groups-topics.md)).
 
 Управлять темой может **только создатель**. Приглашения в тему
-создаются событиями раздела [channels](./channels.md)
-(`[channel]: create invite` с `channel_id` темы).
+создаются и отзываются событиями раздела [channels](./channels.md)
+(`[channel]: create invite` / `[channel]: remove invite` с `channel_id`
+темы).
 
 ## `[group-topic]: create` — создать тему
 

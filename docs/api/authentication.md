@@ -156,7 +156,6 @@ HTTP API — `/api/v1/auth/*`. Все запросы, кроме перечис�
       "bitrates": { ... },
       "ice_servers": [ { "urls": "...", "username": "...", "credential": "..." } ]
     },
-    "locales": [ "ru" ],
     "modules": { ... }
   }
 }

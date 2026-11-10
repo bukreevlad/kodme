@@ -23,6 +23,7 @@
 - [comments-members.md](./comments-members.md) — позиция возврата в ветку комментариев.
 - [channels.md](./channels.md) — открытие каналов, настройки, инвайты.
 - [channels-members.md](./channels-members.md) — подписки, прочитанные, typing.
+- [moderation.md](./moderation.md) — модерация каналов (чистка сообщений участника, бан/разбан).
 - [users.md](./users.md) — профиль и настройки.
 - [main.md](./main.md) — папки.
 - [contacts.md](./contacts.md) — контакты.

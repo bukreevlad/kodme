@@ -79,16 +79,17 @@
 | Раздел | События | Описание |
 | --- | --- | --- |
 | [bots](./bots.md) | `[bot]: get upload avatar url`, `[bot]: save avatar`, `[bot]: remove avatar`, `[bot]: set avatar`, `[bot]: set menu` | Аватар и меню бота. |
-| [broadcasts](./broadcasts.md) | `[broadcast]: create`, `remove`, `get casts`, `get watch token`, `create invite`, `get settings`, `get upload thumb url`, `save settings`, `save thumb`, `set thumb` | Трансляции: создание, управление, токен просмотра, приглашения. |
-| [meets](./meets.md) | `[meet]: create`, `remove`, `get meets`, `create invite`, `get settings`, `save settings`, `get upload thumb url`, `save thumb`, `remove thumb` | Конференции: создание, управление, приглашения. |
+| [broadcasts](./broadcasts.md) | `[broadcast]: create`, `remove`, `get casts`, `get watch token`, `create invite`, `remove invite`, `get settings`, `get upload thumb url`, `save settings`, `save thumb`, `set thumb` | Трансляции: создание, управление, токен просмотра, приглашения. |
+| [meets](./meets.md) | `[meet]: create`, `remove`, `get meets`, `create invite`, `remove invite`, `get settings`, `save settings`, `get upload thumb url`, `save thumb`, `remove thumb` | Конференции: создание, управление, приглашения. |
 | [messages](./messages.md) | `[message]: send`, `get data`, `get upload attach url`, `save attach`, `update`, `remove`, `send reaction` | Сообщения, вложения, реакции. |
-| [channels](./channels.md) | `[channel]: create`, `remove`, `get settings`, `save settings`, `save link`, `get upload avatar url`, `save avatar`, `remove avatar`, `create invite`, `get invites`, `get channels` | Сообщества: создание, управление, приглашения, список своих. |
-| [groups](./groups.md) | `[group]: create`, `remove`, `get settings`, `save settings`, `save link`, аватар ×3, `get moderators`, `add moderator`, `get/save moderator settings` | Группы: создание, управление, модераторы. |
+| [channels](./channels.md) | `[channel]: create`, `remove`, `get settings`, `save settings`, `save link`, `get upload avatar url`, `save avatar`, `remove avatar`, `create invite`, `remove invite`, `get invites`, `get channels` | Сообщества: создание, управление, приглашения, список своих. |
+| [groups](./groups.md) | `[group]: create`, `remove`, `get settings`, `save settings`, `save link`, аватар ×3, `get moderators`, `add moderator`, `remove moderator`, `get/save moderator settings` | Группы: создание, управление, модераторы. |
 | [groups-topics](./groups-topics.md) | `[group-topic]: create`, `remove`, `get settings`, `save settings`, аватар ×3 | Темы групп: создание, управление. |
 | [channels-members](./channels-members.md) | `[channel-member]: get info` | Информация об участнике канала. |
+| [moderation](./moderation.md) | `[moderation]: clean user messages`, `ban member`, `unban member` | Модерация каналов: чистка сообщений участника, бан/разбан. |
 | [storage](./storage.md) | — | У ботов нет событий `[storage]`: файлы грузятся через события своих разделов. |
 | [users](./users.md) | `[user]: get info` | Профили пользователей. |
-| [system](./system.md) | `[system]: ping` | Проверка соединения. |
+| [system](./system.md) | `[system]: ping`, `limits` | Проверка соединения и лимиты платформы стенда. |
 
 Все события, кроме `[system]: ping`, требуют `callbackId`; без него сервер
 возвращает ошибку «Не передан: callback».

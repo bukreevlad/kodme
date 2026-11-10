@@ -105,6 +105,19 @@
 
 *Только владелец.* Ответ — пустой. В чат добавляется системное сообщение `USER_ROLE_CHANGED_TO_MODERATOR_IN_GROUP` с полями `{ user_name, user_id, is_bot }`.
 
+## `[group]: remove moderator` — удалить модератора
+
+```json
+{ "channel_id": "UUIDv7", "user_id": "UUIDv7" }
+```
+
+*Только владелец.* `user_id` — id разжалуемого модератора. Снимаются
+`is_moderator` и все права — участник остаётся в группе. Ответ — пустой.
+В чат добавляется системное сообщение `USER_ROLE_CHANGED_TO_USER_IN_GROUP`
+с полями `{ user_name, user_id, is_bot }`. Ошибки:
+`MODERATOR_NOT_FOUND` (пользователь не модератор этой группы),
+`ACCESS_DENIED`.
+
 ## `[group]: get moderator settings` — права модератора
 
 ```json

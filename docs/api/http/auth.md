@@ -99,7 +99,6 @@
     "bitrates": { "min": 200000, "max": 1500000 },
     "ice_servers": [ { "urls": ["stun:..."], "username": "...", "credential": "..." } ]
   },
-  "locales": ["ru", "en"],
   "modules": { "calls": true, "broadcasts": true, "meets": true },
   "limits": {
     "files": { "max_size_bytes": 524288000, "max_files_per_message": 10, "max_file_name_length": 255, "max_metadata_bytes": 65536 },

@@ -44,6 +44,7 @@ Push-кадры не имеют `callbackId` и не требуют ответа
 | `[comment-member]: update last viewed comment` | [comments-members.md](./comments-members.md) |
 | `[channel]: new`, `[channel]: update`, `[channel]: remove`, `[channel]: user typing` | [channels.md](./channels.md) |
 | `[channel-member]: typing status`, `[channel-member]: update last viewed message`, `[channel-member]: update participant viewed message` | [channels-members.md](./channels-members.md) |
+| `[moderation]: cleaned`, `[moderation]: member banned`, `[moderation]: member unbanned` | [moderation.md](./moderation.md) |
 | `[user]: online status` | [users.md](./users.md) |
 | `[broadcast]: update` | [broadcasts.md](./broadcasts.md) |
 | `[meet]: user enter`, `[meet]: user exit` | [meets.md](./meets.md) |

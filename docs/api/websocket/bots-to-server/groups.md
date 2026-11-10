@@ -5,8 +5,9 @@
 версиями (см. [groups.md](../client-to-server/groups.md)).
 
 Управлять группой может **только создатель**. Приглашения в группу
-создаются событиями раздела [channels](./channels.md)
-(`[channel]: create invite` с `channel_id` группы).
+создаются и отзываются событиями раздела [channels](./channels.md)
+(`[channel]: create invite` / `[channel]: remove invite` с `channel_id`
+группы).
 
 ## `[group]: create` — создать группу
 
@@ -66,8 +67,9 @@
 | --- | --- | --- |
 | `[group]: get moderators` | `{ "channel_id", "direction", "cursor_id", "offset" }` | Список модераторов. |
 | `[group]: add moderator` | `{ "channel_id", "user_id", can_* }` | Назначить модератора. `user_id` — **id назначаемого**; права: `can_deleted_message`, `can_clean_messages`, `can_restrict_members`, `can_invite_users`, `can_pin_messages` (все `boolean`). |
+| `[group]: remove moderator` | `{ "channel_id", "user_id" }` | Удалить модератора (`user_id` — id модератора): снимаются все права, участник остаётся в группе. |
 | `[group]: get moderator settings` | `{ "channel_id", "user_id" }` | Права модератора (`user_id` — id модератора). |
 | `[group]: save moderator settings` | `{ "channel_id", "user_id", can_* }` | Изменить права. |
 
-Назначение и изменение прав — только создателю группы. Ответы — как у
+Назначение, удаление и изменение прав — только создателю группы. Ответы — как у
 клиентских событий.

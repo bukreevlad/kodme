@@ -121,7 +121,6 @@ services:
     volumes:
       - ./kodme/logs:/app/logs  # Папка для файлов с логами
       - ./kodme/config.yaml:/app/config.yaml  # Файл конфигурации приложения
-      - ./nginx/html/web-client:/app/dist # Статика (клиент)
       - ./postgres/backup:/app/postgres/backup # Для создания копий БД
     networks:
       app:

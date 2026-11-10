@@ -26,11 +26,6 @@ server:
   administrators:
     - id: ""
 
-  # Поддерживаемые языковые локализации
-  locales:
-    - locale: "ru"
-      name: "Русский"
-
   # Основной домен платформы
   host: "https://domain.ru"
 
