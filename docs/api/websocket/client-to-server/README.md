@@ -21,10 +21,10 @@
 - [messages.md](./messages.md) — сообщения, реакции, вложения, кнопки.
 - [comments.md](./comments.md) — комментарии под постами сообществ, реакции, вложения.
 - [comments-members.md](./comments-members.md) — позиция возврата в ветку комментариев.
-- [channels.md](./channels.md) — открытие каналов, настройки, инвайты.
+- [channels.md](./channels.md) — каналы: открытие, настройки, инвайты, синхронизация (`get updates`).
 - [channels-members.md](./channels-members.md) — подписки, прочитанные, typing.
 - [moderation.md](./moderation.md) — модерация каналов (чистка сообщений участника, бан/разбан).
-- [users.md](./users.md) — профиль и настройки.
+- [users.md](./users.md) — профиль и настройки, личная лента событий (`get updates`).
 - [main.md](./main.md) — папки.
 - [contacts.md](./contacts.md) — контакты.
 - [sessions.md](./sessions.md) — сессии, push.

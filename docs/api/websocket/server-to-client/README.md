@@ -18,11 +18,11 @@ Push-кадры не имеют `callbackId` и не требуют ответа
 
 | Куда | Что приходит |
 | --- | --- |
-| `user::<user_id>` | Личные события: сообщения диалогов (`тип 1, 5, 8`), статусы онлайн, новые/удалённые каналы, прочтения в диалогах. |
-| `channel::<channel_id>` | События каналов/групп: сообщения (`тип 2, 3, 4, 6, 7`), обновления канала, typing, участники. |
+| `user::<user_id>` | Личные события: новые и потерянные каналы, прочтения в диалогах, статусы онлайн. |
+| `channel::<channel_id>` | События канала: лента событий `[channel]: feed` (сообщения, участники, изменения канала), typing. |
 | `bot::<bot_id>` | Сообщения ботов. |
 | `broadcast::<cast_id>` | Обновления статуса трансляции (комната подписывается событием `[broadcast]: open`). |
-| `cast_online_chat::<cast_id>` | Сообщения чата онлайн-трансляции (`тип 7`). |
+| `cast_online_chat::<cast_id>` | Сообщения чата онлайн-трансляции (`kind: "cast_chat"`). |
 | `meet::<meet_id>` | Вход/выход участников конференции (комната подписывается через `[meet]: open`). |
 
 Часть событий доставляется **на конкретное устройство или соединение**
@@ -39,13 +39,13 @@ Push-кадры не имеют `callbackId` и не требуют ответа
 
 | Событие | Страница |
 | --- | --- |
-| `[message]: new`, `[message]: update`, `[message]: remove`, `[message]: clear history` | [messages.md](./messages.md) |
+| `[channel]: feed` — лента событий канала (сообщения, участники, изменения) | [channels.md](./channels.md), [messages.md](./messages.md) |
+| `[channel]: user typing` | [channels.md](./channels.md) |
 | `[comment]: new`, `[comment]: update`, `[comment]: remove`, `[comment]: update post commenting` | [comments.md](./comments.md) |
 | `[comment-member]: update last viewed comment` | [comments-members.md](./comments-members.md) |
-| `[channel]: new`, `[channel]: update`, `[channel]: remove`, `[channel]: user typing` | [channels.md](./channels.md) |
 | `[channel-member]: typing status`, `[channel-member]: update last viewed message`, `[channel-member]: update participant viewed message` | [channels-members.md](./channels-members.md) |
-| `[moderation]: cleaned`, `[moderation]: member banned`, `[moderation]: member unbanned` | [moderation.md](./moderation.md) |
 | `[user]: online status` | [users.md](./users.md) |
+| `[user]: feed` — личная лента событий (каналы появились/исчезли) | [users.md](./users.md) |
 | `[broadcast]: update` | [broadcasts.md](./broadcasts.md) |
 | `[meet]: user enter`, `[meet]: user exit` | [meets.md](./meets.md) |
 | `[call]: incoming` / `[call]: declined` | [calls.md](./calls.md) |

@@ -1,19 +1,19 @@
 # groups — группы
 
-События раздела `[group]`. Группа — канал типа 2. Модераторам доступна часть действий.
+События раздела `[group]`. Группа — канал `kind: "group"`. Модераторам доступна часть действий.
 
 ## `[group]: create` — создание группы
 
 ```json
-{ "name": "Python разработчики", "about": null, "is_public": true, "is_posting": false }
+{ "name": "Python разработчики", "about": null, "visibility": "public", "posting_mode": "admins" }
 ```
 
 | Поле | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `name` | `string` | — | Название, `^[а-яеЁА-Яa-zA-Z0-9-:_ .\/\\]{2,128}$`. |
 | `about` | `string \| null` | `null` | Описание, до 255 символов. |
-| `is_public` | `boolean` | `true` | Публичность. |
-| `is_posting` | `boolean` | `false` | Разрешена ли запись сообщений участниками. |
+| `visibility` | `string` | `"public"` | `"public"` \| `"private"` — публичность группы. |
+| `posting_mode` | `string` | `"admins"` | Кто может писать: `"all"` — все подписанные участники, `"admins"` — только владелец и модераторы с правом публикации. |
 
 Ответ: `{ "channel_id": "UUIDv7" }`.
 
@@ -28,14 +28,14 @@
 ```json
 {
   "id": "UUIDv7",
-  "created_user_id": "UUIDv7",
-  "type": 2,
+  "owner_id": "UUIDv7",
+  "kind": "group",
   "name": "П",
   "about": null,
   "created_at": "2026-09-21T12:34:56.789Z",
-  "topic_for_group_id": null,
-  "is_public": true,
-  "is_posting": false,
+  "parent_channel_id": null,
+  "visibility": "public",
+  "posting_mode": "admins",
   "link": null,
   "avatar": null
 }
@@ -44,7 +44,7 @@
 ## `[group]: save settings` — изменение настроек
 
 ```json
-{ "channel_id": "UUIDv7", "name": "Новое имя", "link": null, "about": null, "is_public": true, "is_posting": false }
+{ "channel_id": "UUIDv7", "name": "Новое имя", "link": null, "about": null, "visibility": "public", "posting_mode": "admins" }
 ```
 
 *Только владелец.* Поле `link` игнорируется (ссылка меняется событием `[group]: save link`). При смене имени в чат добавляется системное сообщение `USER_RENAMED_GROUP`. Ответ — пустой.
@@ -68,10 +68,16 @@
 ## `[group]: topic create` — создать тему группы
 
 ```json
-{ "channel_id": "UUIDv7", "name": "Обсуждения", "about": null, "is_posting": true }
+{ "channel_id": "UUIDv7", "name": "Обсуждения", "about": null, "posting_mode": "all" }
 ```
 
-Ответ: `{ "channel_id": "UUIDv7" }` — id канала темы (тип 4).
+| Поле | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `name` | `string` | — | Название, `^[а-яеЁА-Яa-zA-Z0-9-:_ .\/\\]{2,128}$`. |
+| `about` | `string \| null` | `null` | Описание. |
+| `posting_mode` | `string` | `"all"` | Кто может писать: `"all"` — все подписанные участники, `"admins"` — только владелец и модераторы с правом публикации. |
+
+Ответ: `{ "channel_id": "UUIDv7" }` — id канала темы (`kind: "topic"`).
 
 ## `[group]: get topics` — темы группы
 
@@ -79,7 +85,7 @@
 { "channel_id": "UUIDv7", "direction": "next", "cursor_id": null, "offset": 35 }
 ```
 
-Ответ — массив [Channel](../../objects/channel.md) (тип 4) **и** поле `has_more: boolean` — есть ли продолжение в сторону `direction` (для первой загрузки — есть ли продолжение после страницы).
+Ответ — массив [Channel](../../objects/channel.md) (`kind: "topic"`) **и** поле `has_more: boolean` — есть ли продолжение в сторону `direction` (для первой загрузки — есть ли продолжение после страницы).
 
 ## `[group]: get moderators` — модераторы
 
@@ -87,7 +93,12 @@
 { "channel_id": "UUIDv7", "direction": "next", "cursor_id": null, "offset": 35 }
 ```
 
-Ответ — массив объектов модераторов: поля членства (участника) + поля [User](../../objects/user.md) (base) **и** поле `has_more: boolean` — есть ли продолжение в сторону `direction` (для первой загрузки — есть ли продолжение после страницы).
+Ответ — массив объектов модераторов: поля членства участника
+(`is_subscribed`, `is_banned`, `banned_at`, `subscribed_at`), поля прав
+модератора (`is_moderator`, `can_deleted_message`, `can_clean_messages`,
+`can_restrict_members`, `can_invite_users`, `can_pin_messages`,
+`can_posting_messages` — см. [Role](../../objects/role.md)) + поля
+[User](../../objects/user.md) (base) **и** поле `has_more: boolean` — есть ли продолжение в сторону `direction` (для первой загрузки — есть ли продолжение после страницы).
 
 ## `[group]: add moderator` — назначить модератора
 
@@ -99,11 +110,18 @@
   "can_clean_messages": false,
   "can_restrict_members": false,
   "can_invite_users": false,
-  "can_pin_messages": false
+  "can_pin_messages": false,
+  "can_posting_messages": false
 }
 ```
 
-*Только владелец.* Ответ — пустой. В чат добавляется системное сообщение `USER_ROLE_CHANGED_TO_MODERATOR_IN_GROUP` с полями `{ user_name, user_id, is_bot }`.
+*Только владелец.* Назначает модератора канала: по одной узкой роли
+(`channel_moderator_*`, см. [Role](../../objects/role.md)) на каждое
+включённое право `can_*`. Поля `can_*`
+входят в контракт события, а состав прав задаётся событием
+`save moderator settings`. Ответ — пустой. В чат добавляется системное
+сообщение `USER_ROLE_CHANGED_TO_MODERATOR_IN_GROUP` с полями
+`{ user_name, user_id, is_bot }`.
 
 ## `[group]: remove moderator` — удалить модератора
 
@@ -111,8 +129,8 @@
 { "channel_id": "UUIDv7", "user_id": "UUIDv7" }
 ```
 
-*Только владелец.* `user_id` — id разжалуемого модератора. Снимаются
-`is_moderator` и все права — участник остаётся в группе. Ответ — пустой.
+*Только владелец.* `user_id` — id разжалуемого модератора. Роль модератора
+снимается — участник остаётся в группе. Ответ — пустой.
 В чат добавляется системное сообщение `USER_ROLE_CHANGED_TO_USER_IN_GROUP`
 с полями `{ user_name, user_id, is_bot }`. Ошибки:
 `MODERATOR_NOT_FOUND` (пользователь не модератор этой группы),
@@ -124,7 +142,11 @@
 { "channel_id": "UUIDv7", "user_id": "UUIDv7" }
 ```
 
-Ответ — поля членства модератора + поля [User](../../objects/user.md) (base).
+Ответ — поля членства модератора (`is_subscribed`, `is_banned`, `banned_at`,
+`subscribed_at`), поля прав модератора (`is_moderator`, `can_deleted_message`,
+`can_clean_messages`, `can_restrict_members`, `can_invite_users`,
+`can_pin_messages`, `can_posting_messages`, см.
+[Role](../../objects/role.md)) + поля [User](../../objects/user.md) (base).
 
 ## `[group]: save moderator settings` — изменить права модератора
 
@@ -136,11 +158,19 @@
   "can_clean_messages": true,
   "can_restrict_members": true,
   "can_invite_users": true,
-  "can_pin_messages": true
+  "can_pin_messages": true,
+  "can_posting_messages": true
 }
 ```
 
-Ответ — пустой.
+Ответ — пустой. Галочки превращаются в канальные роли модератора (см.
+[Role](../../objects/role.md)): по одной узкой роли `channel_moderator_*` на
+каждое включённое право; если ни одно право не включено — модераторские роли
+снимаются (участник остаётся в группе). `can_posting_messages` разрешает
+писать в сущности с режимом `posting_mode: "admins"` («Только администратор»):
+без права в таком режиме публикация доступна только создателю. От права не
+зависит общий режим `posting_mode: "all"` — там пишут все подписанные
+участники.
 
 ## `[group]: get upload avatar url` / `[group]: save avatar`
 

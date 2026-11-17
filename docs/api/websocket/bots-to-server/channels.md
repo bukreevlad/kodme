@@ -1,17 +1,19 @@
 # channels — каналы бота
 
 События раздела `[channel]` для соединения бота. Бот создаёт и управляется
-каналами-сообществами (type 3) как владелец. Контракты совпадают с
+каналами-сообществами (`kind: "channel"`) как владелец. Контракты совпадают с
 клиентскими версиями (см. [channels.md](../client-to-server/channels.md)).
 
-Управлять каналом (настройки, ссылка, аватар, приглашения, удаление)
-может **только создатель**. Событиями приглашений пользуются и группы,
+Управлять каналом (настройки, ссылка, аватар, удаление)
+может **только создатель**; приглашения (создание, список, отзыв)
+доступны также модератору с правом `members.invite`. Событиями
+приглашений пользуются и группы,
 и темы: это тоже каналы, их id передаётся в `channel_id`.
 
 ## `[channel]: create` — создать сообщество
 
 ```json
-{ "name": "Канал", "about": "", "link": "", "is_public": true, "is_posting": false, "is_commenting": false }
+{ "name": "Канал", "about": "", "link": "", "visibility": "public", "posting_mode": "admins", "is_commenting": false }
 ```
 
 | Поле | Тип | По умолчанию | Описание |
@@ -19,8 +21,8 @@
 | `name` | `string` | — | Название (обязательно). |
 | `about` | `string \| null` | `""` | Описание. |
 | `link` | `string \| null` | `""` | Публичная ссылка; пусто — без ссылки. |
-| `is_public` | `boolean` | `true` | Публичность. |
-| `is_posting` | `boolean` | `false` | Могут ли писать все. |
+| `visibility` | `string` | `"public"` | `"public"` \| `"private"` — публичность. |
+| `posting_mode` | `string` | `"admins"` | Кто может писать: `"all"` — все подписанные участники, `"admins"` — только владелец и модераторы с правом публикации. |
 | `is_commenting` | `boolean` | `false` | Можно ли комментировать записи. |
 
 Ответ: `{ "channel_id": "UUIDv7" }`.
@@ -37,7 +39,7 @@
 ## `[channel]: get settings` / `[channel]: save settings` — настройки
 
 ```json
-{ "channel_id": "UUIDv7", "name": "Новое", "about": "", "is_public": true, "is_posting": false, "is_commenting": false }
+{ "channel_id": "UUIDv7", "name": "Новое", "about": "", "visibility": "public", "posting_mode": "admins", "is_commenting": false }
 ```
 
 Только создатель. `get settings` принимает только `channel_id` и
@@ -90,6 +92,8 @@
 { "direction": null, "cursor_id": null, "offset": 100 }
 ```
 
-Поля пагинации — как у клиентского `[channel]: get user conversations`.
+Поля пагинации — как у клиентского `[channel]: get conversations`.
 Ответ — массив meta каналов. Возвращаются **только созданные ботом**
-каналы (без подписок, диалогов и чужих публичных).
+сообщества (`kind = channel`: без групп, подписок, диалогов и чужих
+публичных). Список групп бота — отдельное событие
+`[group]: get groups` (см. [groups.md](./groups.md)).

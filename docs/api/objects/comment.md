@@ -1,19 +1,20 @@
 # Comment — комментарий
 
-Комментарий под постом сообщества (канал `type = 3`).
+Комментарий под постом сообщества (канал `kind: "channel"`).
 
 ```json
 {
   "id": "UUIDv7",
+  "random_id": "UUIDv7",
   "entity_id": "UUIDv7",
   "entity_type": "message",
-  "created_user_id": "UUIDv7",
+  "author_id": "UUIDv7",
   "text": "Красивое фото!",
   "reply_to_comment_id": null,
   "created_at": "2026-09-21T12:34:56.789Z",
   "edited_at": null,
   "channel_id": "UUIDv7",
-  "channel_type": 3,
+  "channel_kind": "channel",
   "is_moderator": false,
   "display_name": "Иван Петров",
   "avatar": null,
@@ -28,16 +29,17 @@
 | Поле | Тип | Описание |
 | --- | --- | --- |
 | `id` | `UUIDv7` | Id комментария. |
+| `random_id` | `UUIDv7 \| null` | Клиентский ключ идемпотентности (у комментариев, отправленных без него, — `null`). Позволяет сопоставить свой локальный комментарий с пришедшим из событий. |
 | `entity_id` | `UUIDv7` | Id поста (сообщения), под которым написан комментарий. |
 | `entity_type` | `string` | Всегда `"message"`. |
-| `created_user_id` | `UUIDv7` | Автор комментария. |
+| `author_id` | `UUIDv7` | Автор комментария. |
 | `text` | `string` | Текст (HTML-экранирован сервером). Может быть пустым, если есть вложения. |
 | `reply_to_comment_id` | `UUIDv7 \| null` | Комментарий, на который отвечают. |
 | `reply_to_comment` | [Comment](./comment.md) \| `null` | Объект ответа. Разворачивается только на один уровень. |
 | `created_at` | `ISO 8601` | Дата отправки. |
 | `edited_at` | `ISO 8601 \| null` | Дата редактирования. |
 | `channel_id` | `UUIDv7` | Канал, в котором лежит пост (из [Message](./message.md)). |
-| `channel_type` | `int` | Тип канала, для комментариев всегда `3`. |
+| `channel_kind` | `string` | Вид канала, для комментариев всегда `"channel"`. |
 | `is_moderator` | `boolean` | Автор — модератор сообщества. |
 | `display_name` | `string` | Отображаемое имя автора. |
 | `avatar` | [File](./file.md) \| `null` | Аватар автора. |

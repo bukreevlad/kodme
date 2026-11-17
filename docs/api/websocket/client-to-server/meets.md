@@ -1,7 +1,7 @@
 # meets — конференции
 
 События раздела `[meet]`. Конференции работают через LiveKit; у каждой конференции есть
-чат (канал типа 6). Основной объект — [Meet](../../objects/meet.md).
+чат (канал `kind: "meet_chat"`). Основной объект — [Meet](../../objects/meet.md).
 
 ## `[meet]: create` — создать конференцию
 
@@ -14,7 +14,7 @@
 | `name` | `string` | — | Название, `^[\p{sc=Cyrillic}\p{sc=Common}\p{sc=Latin}]{2,128}$`. |
 | `about` | `string \| null` | `null` | Описание, до 255 символов. |
 | `is_public` | `boolean` | `true` | Публичность. |
-| `is_chat` | `boolean` | `true` | Создать чат конференции (канал типа 6). |
+| `is_chat` | `boolean` | `true` | Создать чат конференции (канал `kind: "meet_chat"`). |
 
 Ответ: `{ "meet_id": "UUIDv7" }`.
 
@@ -221,7 +221,7 @@ LiveKit. Сбрасываются вместе с комнатой,
 { "meet_id": "UUIDv7", "name": "Для команды", "max_users": 0 }
 ```
 
-`max_users`: `0` — без лимита. Ответ — объект [Invite](../../objects/invite.md).
+*Только владелец.* `max_users`: `0` — без лимита. Ответ — объект [Invite](../../objects/invite.md).
 
 ## `[meet]: get invites` — список приглашений
 
@@ -229,7 +229,7 @@ LiveKit. Сбрасываются вместе с комнатой,
 { "meet_id": "UUIDv7", "direction": "next", "cursor_id": null, "offset": 100 }
 ```
 
-`offset` — диапазон 1–300. Ответ — массив [Invite](../../objects/invite.md) **и** поле `has_more: boolean` — есть ли продолжение в сторону `direction` (для первой загрузки — есть ли продолжение после страницы).
+*Только владелец.* `offset` — диапазон 1–300. Ответ — массив [Invite](../../objects/invite.md) **и** поле `has_more: boolean` — есть ли продолжение в сторону `direction` (для первой загрузки — есть ли продолжение после страницы).
 
 ## `[meet]: remove invite` — отозвать приглашение
 

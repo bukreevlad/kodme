@@ -162,7 +162,7 @@ HTTP API — `/api/v1/auth/*`. Все запросы, кроме перечис�
 ```
 
 - `avatar` — токенизированный объект (null, если аватарки нет).
-- `favorite_channel_id` — канал «Избранное» пользователя (type 5).
+- `favorite_channel_id` — канал «Избранное» пользователя (`kind: "favorite"`).
 - `is_pushes` — тип активного push на текущей сессии: `"web"`, `"hms"`, `"fcm"` или `null`.
 - `roles` могут переопределяться сервером (по умолчанию все перечисленные — `true`).
 - Ошибки: `SESSION_NOT_FOUND`, `SESSION_NOT_CONFIRMED`, `USER_BLOCKED`.

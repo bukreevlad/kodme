@@ -18,7 +18,7 @@
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `botId` | `UUIDv7` | Id бота. |
-| `Sec-WebSocket-Protocol` | `string` | Заголовок handshake'а с секретным токеном бота (`bot_token`). Выдаётся владельцу бота в ответе клиентского события `[bot]: get settings` (см. [bots.md](../client-to-server/bots.md)). Храните в безопасности, не логируйте. Токен передаётся заголовком, а не query-параметром: query-строки попадают в access-логи, заголовок — нет. |
+| `Sec-WebSocket-Protocol` | `string` | Заголовок handshake'а с секретным токеном бота (`token`). Выдаётся владельцу бота в ответе клиентского события `[bot]: get settings` (см. [bots.md](../client-to-server/bots.md)). Храните в безопасности, не логируйте. Токен передаётся заголовком, а не query-параметром: query-строки попадают в access-логи, заголовок — нет. |
 
 Токен также принимается в query `?token=` — устарело: используйте заголовок.
 
@@ -83,9 +83,9 @@
 | [meets](./meets.md) | `[meet]: create`, `remove`, `get meets`, `create invite`, `remove invite`, `get settings`, `save settings`, `get upload thumb url`, `save thumb`, `remove thumb` | Конференции: создание, управление, приглашения. |
 | [messages](./messages.md) | `[message]: send`, `get data`, `get upload attach url`, `save attach`, `update`, `remove`, `send reaction` | Сообщения, вложения, реакции. |
 | [channels](./channels.md) | `[channel]: create`, `remove`, `get settings`, `save settings`, `save link`, `get upload avatar url`, `save avatar`, `remove avatar`, `create invite`, `remove invite`, `get invites`, `get channels` | Сообщества: создание, управление, приглашения, список своих. |
-| [groups](./groups.md) | `[group]: create`, `remove`, `get settings`, `save settings`, `save link`, аватар ×3, `get moderators`, `add moderator`, `remove moderator`, `get/save moderator settings` | Группы: создание, управление, модераторы. |
+| [groups](./groups.md) | `[group]: create`, `remove`, `get settings`, `save settings`, `save link`, аватар ×3, `get groups`, `get moderators`, `add moderator`, `remove moderator`, `get/save moderator settings` | Группы: создание, список своих, управление, модераторы. |
 | [groups-topics](./groups-topics.md) | `[group-topic]: create`, `remove`, `get settings`, `save settings`, аватар ×3 | Темы групп: создание, управление. |
-| [channels-members](./channels-members.md) | `[channel-member]: get info` | Информация об участнике канала. |
+| [channels-members](./channels-members.md) | `[channel-member]: get info`, `get members` | Информация об участнике и список участников канала. |
 | [moderation](./moderation.md) | `[moderation]: clean user messages`, `ban member`, `unban member` | Модерация каналов: чистка сообщений участника, бан/разбан. |
 | [storage](./storage.md) | — | У ботов нет событий `[storage]`: файлы грузятся через события своих разделов. |
 | [users](./users.md) | `[user]: get info` | Профили пользователей. |

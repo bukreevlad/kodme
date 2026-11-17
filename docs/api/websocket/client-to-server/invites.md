@@ -17,7 +17,7 @@
 ```json
 {
   "channel_id": "UUIDv7",
-  "channel_type": 3,
+  "channel_kind": "channel",
   "display_name": "Название канала",
   "about": null,
   "total_members": 42

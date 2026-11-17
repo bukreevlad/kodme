@@ -40,7 +40,7 @@
   "style": "{ ... }",
   "created_at": "2026-09-21T12:34:56.789Z",
   "edited_at": null,
-  "created_user_id": "UUIDv7",
+  "author_id": "UUIDv7",
   "author_name": "Иван Петров"
 }
 ```

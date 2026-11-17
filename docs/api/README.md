@@ -46,5 +46,5 @@ API состоит из двух частей:
 
 1. Получите токены — см. [authentication.md](./authentication.md).
 2. Откройте WebSocket-соединение — см. [connection.md](./connection.md).
-3. Получите стартовые данные (`[user]: get settings`, `[channel]: get user conversations`).
+3. Получите стартовые данные (`[user]: get settings`, `[channel]: get conversations`).
 4. Отправляйте события и обрабатывайте push — см. разделы `client-to-server/` и `server-to-client/`.

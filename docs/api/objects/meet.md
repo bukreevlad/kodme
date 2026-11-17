@@ -1,6 +1,6 @@
 # Meet — конференция
 
-Конференция (видео-встреча) работает через LiveKit; есть чат (канал типа 6).
+Конференция (видео-встреча) работает через LiveKit; есть чат (`kind: "meet_chat"`).
 Управление — [meets.md](../websocket/client-to-server/meets.md).
 
 ```json
@@ -12,7 +12,7 @@
   "is_chat": true,
   "chat_channel_id": "UUIDv7",
   "created_at": "2026-09-21T12:34:56.789Z",
-  "created_user_id": "UUIDv7",
+  "owner_id": "UUIDv7",
   "thumbnail_document_id": null,
   "thumbnail": null,
   "created_display_name": "Иван Петров"
@@ -26,9 +26,9 @@
 | `about` | `string \| null` | Описание. |
 | `is_public` | `boolean` | Публичность. |
 | `is_chat` | `boolean` | Есть ли чат. |
-| `chat_channel_id` | `UUIDv7 \| null` | Канал чата (тип 6). |
+| `chat_channel_id` | `UUIDv7 \| null` | Канал чата (`kind: "meet_chat"`). |
 | `created_at` | `ISO 8601` | Дата создания. |
-| `created_user_id` | `UUIDv7` | Владелец. |
+| `owner_id` | `UUIDv7` | Владелец. |
 | `thumbnail_document_id` | `UUIDv7 \| null` | Id документа обложки. |
 | `thumbnail` | [File](./file.md) \| `null` | Обложка. |
 | `created_display_name` | `string` | Имя создателя (у бота — его `link`). |

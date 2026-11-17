@@ -1,6 +1,6 @@
 # broadcasts — трансляции
 
-События раздела `[broadcast]`. Трансляция связана с SRS (RTMP/RTC) и чатом на базе канала типа 7.
+События раздела `[broadcast]`. Трансляция связана с SRS (RTMP/RTC) и чатом на базе канала `kind: "cast_chat"`.
 Основной объект — [Broadcast](../../objects/broadcast.md).
 
 ## `[broadcast]: create` — создать трансляцию
@@ -14,7 +14,7 @@
 | `name` | `string` | — | Название, 2–128 символов (кириллица/латиница/общие символы). |
 | `about` | `string \| null` | `null` | Описание, до 255 символов. |
 | `is_public` | `boolean` | `true` | Публичность. |
-| `is_chat` | `boolean` | `true` | Включить чат трансляции (создаётся канал типа 7). |
+| `is_chat` | `boolean` | `true` | Включить чат трансляции (создаётся канал `kind: "cast_chat"`). |
 
 Ответ: `{ "cast_id": "UUIDv7" }`.
 
@@ -122,7 +122,7 @@
 { "cast_id": "UUIDv7", "name": "Для друзей", "max_users": 0 }
 ```
 
-`max_users`: `0` — без лимита, диапазон 0–1000. Ответ — объект [Invite](../../objects/invite.md).
+*Только владелец.* `max_users`: `0` — без лимита, диапазон 0–1000. Ответ — объект [Invite](../../objects/invite.md).
 
 ## `[broadcast]: get invites` — список приглашений
 
@@ -130,7 +130,7 @@
 { "cast_id": "UUIDv7", "direction": "next", "cursor_id": null, "offset": 100 }
 ```
 
-`offset` — диапазон 1–300. Ответ — массив [Invite](../../objects/invite.md) **и** поле `has_more: boolean` — есть ли продолжение в сторону `direction` (для первой загрузки — есть ли продолжение после страницы).
+*Только владелец.* `offset` — диапазон 1–300. Ответ — массив [Invite](../../objects/invite.md) **и** поле `has_more: boolean` — есть ли продолжение в сторону `direction` (для первой загрузки — есть ли продолжение после страницы).
 
 ## `[broadcast]: remove invite` — отозвать приглашение
 

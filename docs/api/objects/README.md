@@ -26,6 +26,7 @@
 | [Folder](./folder.md) | Папка каналов. | `[main]`. |
 | [Session](./session.md) | Сессия устройства. | `[session]: get sessions`. |
 | [Bot](./bot.md) | Бот. | `[bot]`, `[bots-apps]`, `[search]`. |
+| [Role](./role.md) | Роль, право и назначение роли (модель разрешений). | `role_id` пользователя, права модератора канала. |
 | [Broadcast](./broadcast.md) | Трансляция. | `[broadcast]`. |
 | [Meet](./meet.md) | Конференция. | `[meet]`. |
 | [Theme](./theme.md) | Тема оформления. | `[theme]`. |

@@ -1,6 +1,6 @@
 # Bot — бот
 
-Бот — пользователь с `is_bot: true`, зарегистрированный разработчиком через
+Бот — пользователь с профилем бота, зарегистрированный разработчиком через
 раздел `[bot]` ([bots.md](../websocket/client-to-server/bots.md)).
 
 ## Метаданные бота
@@ -9,7 +9,7 @@
 {
   "id": "UUIDv7",
   "bio": null,
-  "bot_created_user_id": "UUIDv7",
+  "owner_id": "UUIDv7",
   "link": "my_bot",
   "apps": [
     { "id": "UUIDv7", "url": "https://example.com/app", "name": "…", "link": null }
@@ -21,14 +21,23 @@
 | --- | --- | --- |
 | `id` | `UUIDv7` | Id бота. |
 | `bio` | `string \| null` | Описание. |
-| `bot_created_user_id` | `UUIDv7` | Владелец бота. |
+| `owner_id` | `UUIDv7` | Владелец бота. |
 | `link` | `string` | Ссылка бота (всегда оканчивается на `_bot`). |
 | `apps` | `array` | Мини-приложения бота. |
 
 В `[search]: get bots` дополнительно есть поле `is_online: boolean`.
 
+## Роль и права
+
+Бот — обычный пользователь с платформенной ролью `bot` (поле `role_id`
+объекта User): базовый срез прав на создание и управление своими
+сущностями, списки конференций и трансляций — только созданные им
+(см. [Role](./role.md)). Бота можно назначить модератором канала или
+группы обычным участником (`channel_moderator_*`) — права действуют через
+назначения канальных ролей.
+
 ## Приватные данные владельца
 
-`[bot]: get settings` дополнительно возвращает `bot_commands` (команды), полные
-объекты `apps` (`id`, `url`, `name`, `link`, `about`, `created_at`) и секретный
-поле `bot_token` (см. [bots.md](../websocket/client-to-server/bots.md)).
+`[bot]: get settings` дополнительно возвращает `commands` (команды), полные
+объекты `apps` (`id`, `url`, `name`, `link`, `about`, `created_at`) и секретное
+поле `token` (см. [bots.md](../websocket/client-to-server/bots.md)).

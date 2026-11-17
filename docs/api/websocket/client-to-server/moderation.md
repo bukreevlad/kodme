@@ -24,8 +24,10 @@
 { "removed": 42, "pts": 123 }
 ```
 
-`removed` — сколько сообщений удалено, `pts` — новый счётчик состояния
-канала (синхронизация остальных устройств). Ошибки: `ACCESS_DENIED`
+`removed` — сколько сообщений удалено, `pts` — новая точка ленты событий
+канала; участникам также приходит событие ленты `messages_cleaned` (см.
+[синхронизацию](../server-to-client/channels.md#синхронизация-и-события-канала)).
+Ошибки: `ACCESS_DENIED`
 (нет прав), `CHANNEL_NOT_FOUND`, `CHANNEL_TYPE_UNSUPPORTED`,
 `CANNOT_CLEAN_SELF` (нельзя чистить свои сообщения),
 `CANNOT_CLEAN_CREATOR`, `CANNOT_CLEAN_MODERATOR`.
@@ -37,7 +39,8 @@
 ```
 
 «Кик + бан»: подписка участника снимается, он не может писать в канал
-и подписаться заново. Ответ — пустой.
+и подписаться заново. Ответ — пустой; участникам приходит событие ленты
+`member_banned` (см. [синхронизацию](../server-to-client/channels.md#синхронизация-и-события-канала)).
 
 Ошибки: `ACCESS_DENIED`, `CHANNEL_NOT_FOUND`, `CHANNEL_TYPE_UNSUPPORTED`,
 `CANNOT_BAN_SELF` (нельзя забанить себя), `CANNOT_BAN_CREATOR`,
@@ -51,5 +54,7 @@
 
 Снимает блокировку. Подписка не возвращается — участник подписывается
 сам; повторный вызов не является ошибкой и ничего не меняет.
-Ответ — пустой. Ошибки: `ACCESS_DENIED`, `CHANNEL_NOT_FOUND`,
+Ответ — пустой; участникам приходит событие ленты `member_unbanned` (см.
+[синхронизацию](../server-to-client/channels.md#синхронизация-и-события-канала)).
+Ошибки: `ACCESS_DENIED`, `CHANNEL_NOT_FOUND`,
 `CHANNEL_TYPE_UNSUPPORTED`.

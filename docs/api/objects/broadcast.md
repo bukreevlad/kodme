@@ -1,6 +1,6 @@
 # Broadcast — трансляция
 
-Трансляция связана с чатом (канал типа 7). Управление — [broadcasts.md](../websocket/client-to-server/broadcasts.md).
+Трансляция связана с чатом (`kind: "cast_chat"`). Управление — [broadcasts.md](../websocket/client-to-server/broadcasts.md).
 
 ## `get_base`
 
@@ -13,10 +13,10 @@
   "is_chat": true,
   "chat_channel_id": "UUIDv7",
   "created_at": "2026-09-21T12:34:56.789Z",
-  "created_user_id": "UUIDv7",
+  "owner_id": "UUIDv7",
   "thumbnail_document_id": null,
   "is_bot": false,
-  "bot_created_user_id": null,
+  "bot_owner_id": null,
   "thumbnail": null
 }
 ```

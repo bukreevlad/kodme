@@ -29,7 +29,7 @@
 | Метод | По умолчанию | Диапазон |
 | --- | --- | --- |
 | `[message]: get history`, `[message]: get data`-порции, большинство списков | `35` | 1–100 |
-| `[channel]: get user conversations`, `[user]: get contacts`, `[channel]: get invites` | `100` | 1–100 |
+| `[channel]: get conversations`, `[user]: get contacts`, `[channel]: get invites` | `100` | 1–100 |
 | `[channel-profile]: *` | `100` (handler) | 1–300 |
 | `[invite]: get invites`-порции (там, где применимо) | по описанию метода | 1–300 |
 

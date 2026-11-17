@@ -48,7 +48,7 @@
 | Раздел | События |
 | --- | --- |
 | [messages](./client-to-server/messages.md) | Сообщения, реакции, вложения, кнопки. |
-| [channels](./client-to-server/channels.md) | Каналы (тип 3): создание, настройки, инвайты. |
+| [channels](./client-to-server/channels.md) | Каналы: создание, настройки, инвайты, синхронизация. |
 | [channels-members](./client-to-server/channels-members.md) | Подписки, уведомления, прочитанные сообщения, typing. |
 | [moderation](./client-to-server/moderation.md) | Модерация каналов: чистка сообщений участника, бан/разбан. |
 | [users](./client-to-server/users.md) | Профиль, настройки, приватность. |

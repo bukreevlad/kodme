@@ -25,7 +25,7 @@
 { "search": "Код", "direction": "next", "cursor_id": null, "offset": 35 }
 ```
 
-Ответ — массив [Channel](../../objects/channel.md) (meta), каналы типа 3, **и** поле `has_more: boolean` — есть ли продолжение в сторону `direction` (для первой загрузки — есть ли продолжение после страницы).
+Ответ — массив [Channel](../../objects/channel.md) (meta), каналы (`kind: "channel"`), **и** поле `has_more: boolean` — есть ли продолжение в сторону `direction` (для первой загрузки — есть ли продолжение после страницы).
 
 ## `[search]: get groups` — поиск групп
 
@@ -33,4 +33,4 @@
 { "search": "Python", "direction": "next", "cursor_id": null, "offset": 35 }
 ```
 
-Ответ — массив [Channel](../../objects/channel.md) (meta), группы типа 2, **и** поле `has_more: boolean` — есть ли продолжение в сторону `direction` (для первой загрузки — есть ли продолжение после страницы).
+Ответ — массив [Channel](../../objects/channel.md) (meta), группы (`kind: "group"`), **и** поле `has_more: boolean` — есть ли продолжение в сторону `direction` (для первой загрузки — есть ли продолжение после страницы).

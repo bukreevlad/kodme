@@ -1,6 +1,7 @@
 # User — пользователь
 
-Пользователь платформы (или бот, если `is_bot: true`).
+Пользователь платформы. Боты — тоже пользователи, но с отдельным объектом
+[Bot](./bot.md): принадлежность к ботам определяется по нему.
 
 ## `get_base` (публичные данные)
 
@@ -13,7 +14,7 @@
   "privacy_messages": "all",
   "privacy_calls": "all",
   "privacy_messages_voice": "all",
-  "is_bot": false,
+  "role_id": "UUIDv7",
   "link": null,
   "display_name": "Иван Петров",
   "last_action_at": "2026-09-21T12:34:56.789Z",
@@ -42,7 +43,7 @@
 | `privacy_messages` | `string` | Приватность сообщений: `"all"` \| `"contacts"` \| `"none"`. |
 | `privacy_calls` | `string` | Приватность звонков: `"all"` \| `"contacts"` \| `"none"`. |
 | `privacy_messages_voice` | `string` | Приватность голосовых: `"all"` \| `"contacts"` \| `"none"`. |
-| `is_bot` | `boolean` | Является ли пользователь ботом. |
+| `role_id` | `UUIDv7` | Роль платформы, назначенная пользователю (по умолчанию — роль `is_default`; у ботов — роль `bot`), см. [Role](./role.md). |
 | `link` | `string \| null` | Публичная ссылка на профиль (у бота — ссылка бота). |
 | `display_name` | `string` | Отображаемое имя (для бота — его `link`). |
 | `last_action_at` | `ISO 8601 \| null` | Последняя активность (максимум по сессиям). |

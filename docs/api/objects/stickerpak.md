@@ -10,7 +10,7 @@
   "name": "Мои стикеры",
   "about": "Первый пак",
   "is_public": false,
-  "created_user_id": "UUIDv7",
+  "owner_id": "UUIDv7",
   "created_at": "2026-09-21T12:34:56.789Z",
   "author_name": "Иван Петров",
   "is_author": true,
@@ -28,7 +28,7 @@
 | `name` | `string` | Название (≤ 64 символов). |
 | `about` | `string \| null` | Описание (≤ 255 символов). |
 | `is_public` | `boolean` | Публичный (виден всем) либо приватный (только автору). |
-| `created_user_id` | `UUIDv7` | Автор. |
+| `owner_id` | `UUIDv7` | Автор. |
 | `created_at` | `ISO 8601` | Дата создания. |
 | `author_name` | `string` | Имя автора. |
 | `is_author` | `boolean` | Является ли запрашивающий автором пака. |

@@ -14,7 +14,7 @@
 ```
 
 `action` — значение, переданное отправителем в `[channel-member]: typing status`.
-В диалоге (`тип 1`) — только собеседнику в `user::<user_id>`; в остальных каналах —
+В диалоге (`kind: "dialog"`) — только собеседнику в `user::<user_id>`; в остальных каналах —
 всем участникам в `channel::<channel_id>`.
 
 ## `[channel-member]: update last viewed message` — отметка прочтения
@@ -31,4 +31,4 @@
 { "user_id": "UUIDv7", "channel_id": "UUIDv7", "message_id": "UUIDv7" }
 ```
 
-Доставляется только в диалогах (`тип 1`) собеседнику в `user::<user_id>`.
+Доставляется только в диалогах (`kind: "dialog"`) собеседнику в `user::<user_id>`.

@@ -5,7 +5,7 @@
   "id": "UUIDv7",
   "entity_id": "UUIDv7",
   "entity_type": "channel",
-  "created_user_id": "UUIDv7",
+  "owner_id": "UUIDv7",
   "name": "Для друзей",
   "link": "abc123",
   "url": "https://domain.ru/+abc123",
@@ -22,7 +22,7 @@
 | `id` | `UUIDv7` | Id приглашения. |
 | `entity_id` | `UUIDv7` | Приглашаемый ресурс. |
 | `entity_type` | `string` | `"channel"` \| `"broadcast"` \| `"meet"`. |
-| `created_user_id` | `UUIDv7` | Создатель. |
+| `owner_id` | `UUIDv7` | Создатель. |
 | `name` | `string` | Название приглашения. |
 | `link` | `string` | Значение ссылки-приглашения (передаётся как `invite`). |
 | `url` | `string` | **Готовая полная ссылка** `<host>/+<link>` — хост берётся из конфигурации сервера, клиенту и боту не нужно собирать её самим. |

@@ -1,20 +1,20 @@
 # groups-topics — темы групп
 
-События раздела `[group-topic]`. Тема — канал типа 4 внутри группы (тип 2).
-Группа задаётся полем `group_id` (id канала группы).
+События раздела `[group-topic]`. Тема — канал `kind: "topic"` внутри группы
+(`kind: "group"`). Группа задаётся полем `group_id` (id канала группы).
 
 ## `[group-topic]: create` — создать тему
 
 ```json
-{ "group_id": "UUIDv7", "name": "Обсуждения", "about": null, "is_public": true, "is_posting": false }
+{ "group_id": "UUIDv7", "name": "Обсуждения", "about": null, "visibility": "public", "posting_mode": "admins" }
 ```
 
 | Поле | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `name` | `string` | — | Название, `^[а-яеЁА-Яa-zA-Z0-9-:_ .\/\\]{2,128}$`. |
 | `about` | `string \| null` | `null` | Описание. |
-| `is_public` | `boolean` | `true` | Публичность. |
-| `is_posting` | `boolean` | `false` | Разрешена ли запись участниками. |
+| `visibility` | `string` | `"public"` | `"public"` \| `"private"` — публичность темы. |
+| `posting_mode` | `string` | `"admins"` | Кто может писать: `"all"` — все подписанные участники, `"admins"` — только владелец и модераторы с правом публикации. |
 
 Ответ: `{ "channel_id": "UUIDv7" }`.
 
@@ -38,14 +38,14 @@
 ```json
 {
   "id": "UUIDv7",
-  "created_user_id": "UUIDv7",
-  "type": 4,
+  "owner_id": "UUIDv7",
+  "kind": "topic",
   "name": "Обсуждения",
   "about": null,
   "created_at": "2026-09-21T12:34:56.789Z",
-  "topic_for_group_id": "UUIDv7",
-  "is_public": true,
-  "is_posting": false,
+  "parent_channel_id": "UUIDv7",
+  "visibility": "public",
+  "posting_mode": "admins",
   "avatar": null
 }
 ```
@@ -53,7 +53,7 @@
 ## `[group-topic]: save settings` — изменить тему
 
 ```json
-{ "channel_id": "UUIDv7", "name": "Новое", "about": null, "is_public": true, "is_posting": false }
+{ "channel_id": "UUIDv7", "name": "Новое", "about": null, "visibility": "public", "posting_mode": "admins" }
 ```
 
 Ответ — пустой.

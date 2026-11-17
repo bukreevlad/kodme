@@ -9,7 +9,7 @@
   "style": "{ ... }",
   "created_at": "2026-09-21T12:34:56.789Z",
   "edited_at": null,
-  "created_user_id": "UUIDv7",
+  "author_id": "UUIDv7",
   "author_name": "Иван Петров"
 }
 ```
@@ -21,5 +21,5 @@
 | `style` | `string` | Стиль темы (JSON-строка). |
 | `created_at` | `ISO 8601` | Дата создания. |
 | `edited_at` | `ISO 8601 \| null` | Дата изменения. |
-| `created_user_id` | `UUIDv7` | Автор. |
+| `author_id` | `UUIDv7` | Автор. |
 | `author_name` | `string` | Имя автора. |
