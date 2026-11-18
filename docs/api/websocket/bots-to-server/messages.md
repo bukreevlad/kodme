@@ -27,7 +27,7 @@
 Автор сообщения — всегда сам бот (поле `author_id` в запросе игнорируется).
 
 Каждое вложение в `attachments` обязано пройти `[message]: save attach` —
-иначе `send` отвечает `DOCUMENT_NOT_PROCESSED` (`122016`).
+иначе `send` отвечает `DOCUMENT_NOT_PROCESSED` (`140100`).
 
 Ответ: `{ "message_id": "UUIDv7" }`.
 
@@ -90,10 +90,15 @@
 ## `[message]: update` — редактирование
 
 ```json
-{ "message_id": "UUIDv7", "text": "Новый текст", "buttons": [ ... ] }
+{ "message_id": "UUIDv7", "text": "Новый текст", "buttons": [ ... ], "attachments": { "UUIDv7": { "file_name": "photo.jpg" } } }
 ```
 
-Только свои сообщения. Ответ — пустой. Обновление доходит участникам
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `attachments` | `object \| null` | Новые вложения `{ "<document_id>": { "file_name" } }` — добавляются к уже имеющимся. Документ должен пройти `[message]: get upload attach url` → загрузку → `[message]: save attach`, иначе `DOCUMENT_NOT_PROCESSED` (140100). |
+
+Только свои сообщения. Пустой `text` допустим, только если переданы
+`attachments`. Ответ — пустой. Обновление доходит участникам
 событием ленты `message_edit` (см.
 [синхронизацию](../server-to-client/channels.md#синхронизация-и-события-канала)).
 

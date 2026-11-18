@@ -101,7 +101,7 @@
 - Хотя бы одно из полей `text` / `attachments` должно быть заполнено, иначе
   `TEXT_OR_ATTACHMENTS_REQUIRED` (`131010`).
 - Каждое вложение в `attachments` обязано пройти `[comment]: save attach` —
-  иначе `send` отвечает `DOCUMENT_NOT_PROCESSED` (`131012`).
+  иначе `send` отвечает `DOCUMENT_NOT_PROCESSED` (`136300`).
 - Веток нет: если `reply_to_comment_id` ссылается на комментарий **другого** поста —
   `REPLY_TO_COMMENT_MISMATCH` (`131008`); на несуществующий/удалённый —
   `REPLY_TO_COMMENT_NOT_FOUND` (`131009`).
@@ -254,11 +254,19 @@
 ## `[comment]: update` — редактирование
 
 ```json
-{ "comment_id": "UUIDv7", "text": "Новый текст" }
+{ "comment_id": "UUIDv7", "text": "Новый текст", "attachments": { "UUIDv7": { "file_name": "photo.jpg" } } }
 ```
 
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `comment_id` | `UUIDv7` | Id комментария. |
+| `text` | `string` | Новый текст. Пустой допустим, только если переданы `attachments` (правка «только файлы»). |
+| `attachments` | `object \| null` | Новые вложения `{ "<document_id>": { "file_name" } }` — добавляются к уже имеющимся. Каждый документ обязан пройти `[comment]: save attach`, иначе `DOCUMENT_NOT_PROCESSED` (136300). |
+
 Редактировать может только автор комментария, иначе `ACCESS_DENIED` (`132100`).
-Вложения при редактировании не меняются.
+Лимит вложений считается по всем вложениям комментария: превышение —
+`ATTACHMENTS_MAX_COUNT_EXCEEDED` (`131309`), невалидный ключ документа —
+`DOCUMENT_ID_INVALID` (`131310`).
 
 Ответ — пустой (`data: null`). Рассылается как `[comment]: update`.
 

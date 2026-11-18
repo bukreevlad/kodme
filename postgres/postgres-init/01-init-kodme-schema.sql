@@ -1072,14 +1072,6 @@ ALTER TABLE ONLY public.attachments
 
 
 --
--- Name: attachments attachments_unique_document_id__entity_id__entity_type; Type: CONSTRAINT; Schema: public; Owner: kodme
---
-
-ALTER TABLE ONLY public.attachments
-    ADD CONSTRAINT attachments_unique_document_id__entity_id__entity_type UNIQUE (document_id, entity_id, entity_type);
-
-
---
 -- Name: bots bots_primary_id; Type: CONSTRAINT; Schema: public; Owner: kodme
 --
 
@@ -1873,6 +1865,12 @@ CREATE INDEX idx_attachments_cloud_context ON public.attachments USING btree (((
 --
 
 CREATE INDEX idx_attachments_context_type_id ON public.attachments USING btree (((entity_context ->> 'type'::text)), ((entity_context ->> 'id'::text)));
+
+--
+-- Name: attachments_unique_document_id__entity_id__entity_type_context; Type: INDEX; Schema: public; Owner: kodme
+--
+
+CREATE UNIQUE INDEX attachments_unique_document_id__entity_id__entity_type_context ON public.attachments (document_id, entity_id, entity_type, entity_context);
 
 
 --
