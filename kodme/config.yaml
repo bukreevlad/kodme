@@ -346,6 +346,7 @@ livekit:
   api_host: "http://host.containers.internal" # livekit в host-режиме, доступен через хост
   api_port: 7880 # Порт сигналинга и WebSocket
   api_metric_port: 9090 # Порт Prometheus метрик (host-режим: хост:9090)
+  api_ingress_host: "http://host.containers.internal" # WHIP-вход livekit-ingress (host-режим, через хост)
   api_ingress_port: 8085 # Порт захвата внешних RTMP/WHIP потоков (Ingress)
 
 # -----------------------------------------------------------------------------
