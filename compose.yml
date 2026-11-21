@@ -32,7 +32,6 @@ services:
       - OME_HOST_IP=YOUR_PUBLIC_IP
     ports:
       - "1935:1935"                       # RTMP ingest (публичный)
-      - "3333:3333"                       # LL-HLS + WebRTC-сигналинг (публичный)
       - "127.0.0.1:8081:8081"             # REST API (только хост)
       - "10000-10003:10000-10003/udp"     # WebRTC ICE (публичный)
       - "10000:10000/tcp"                 # WebRTC ICE over TCP (публичный)

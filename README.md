@@ -153,7 +153,6 @@ graph LR
 | --- | --- | --- |
 | `80`, `443` | TCP | HTTPS (nginx) — в `compose.yml` по умолчанию `9080/9443`, см. [быстрый старт](#-быстрый-старт) |
 | `1935` | TCP | RTMP — приём трансляций (OvenMediaEngine) |
-| `3333` | TCP | LL-HLS и WebRTC-сигналинг (OvenMediaEngine) |
 | `10000–10003` | UDP | WebRTC ICE (OvenMediaEngine) |
 | `10000` | TCP | WebRTC ICE over TCP (OvenMediaEngine) |
 | `13478` | TCP | TURN-relay (OvenMediaEngine) |
@@ -251,7 +250,7 @@ Certbot продлевает сертификаты автоматически �
 | `__JWT_USERS_SECRET__` | `kodme/config.yaml` (`jwt.users.secret`) |
 | `__JWT_STORAGE_SECRET__` | `kodme/config.yaml` (`jwt.storage.secret`) |
 | `__JWT_BROADCASTS_SECRET__` | `kodme/config.yaml` (`jwt.broadcasts.secret`) |
-| `__OME_API_TOKEN__` | `kodme/config.yaml` (`ovenmediaengine.access_token`) |
+| `__OME_API_TOKEN__` | `kodme/config.yaml` (`ovenmediaengine.access_token`) ↔ `ovenmediaengine/Server.xml` (`AccessToken`) |
 | `__OME_WEBHOOK_SECRET__` | `kodme/config.yaml` (`ovenmediaengine.webhook_secret`) ↔ `ovenmediaengine/Server.xml` (`SecretKey`) |
 
 > 📌 TURN-секрет (`__TURN_SECRET__`) и секрет LiveKit (`__LIVEKIT_API_SECRET__`)
@@ -260,12 +259,14 @@ Certbot продлевает сертификаты автоматически �
 ## 🔐 Секреты и безопасность
 
 Скрипт `setup.sh` генерирует для каждого плейсхолдера своё случайное значение
-(`openssl rand -hex 32`) — секреты вашей установки уникальны и не совпадают
-ни с какой другой.
+(`openssl rand -hex 32`, для `__OME_API_TOKEN__` — `openssl rand -hex 16`:
+OvenMediaEngine ограничивает длину токена) — секреты вашей установки уникальны
+и не совпадают ни с какой другой.
 
 Если настраиваете секреты вручную или ротируете их:
 
-- генерируйте новое значение: `openssl rand -hex 32`;
+- генерируйте новое значение: `openssl rand -hex 32`
+  (для `__OME_API_TOKEN__` — `openssl rand -hex 16`, длиннее OME не примет);
 - соблюдайте связки из таблицы выше;
 - помните: пароль БД (`POSTGRES_PASSWORD`) меняется только вместе с
   переинициализацией базы — для работающей установки потребуется

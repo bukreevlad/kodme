@@ -29,13 +29,14 @@ SECRET_FILES=(
 )
 
 # --------------------------------------------------------------------------
-# Генерация секрета: 32 байта случайных данных в hex
+# Генерация секрета: N байт случайных данных в hex (по умолчанию 32)
 # --------------------------------------------------------------------------
 gen_secret() {
+    local bytes="${1:-32}"
     if command -v openssl > /dev/null 2>&1; then
-        openssl rand -hex 32
+        openssl rand -hex "$bytes"
     else
-        head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n'
+        head -c "$bytes" /dev/urandom | od -An -tx1 | tr -d ' \n'
     fi
 }
 
@@ -137,10 +138,16 @@ PLACEHOLDERS="$(grep -hoE '__[A-Z0-9_]+__' "${SECRET_FILES[@]}" 2>/dev/null | so
 if [ -z "$PLACEHOLDERS" ]; then
     echo "ℹ️  Плейсхолдеры секретов не найдены — секреты уже настроены."
     echo "   Для ручной генерации значения: openssl rand -hex 32"
+    echo "   (для __OME_API_TOKEN__ — openssl rand -hex 16: OME ограничивает длину)"
 else
     COUNT=0
     for p in $PLACEHOLDERS; do
-        s="$(gen_secret)"
+        # OME ограничивает длину AccessToken (~50 символов) — 16 байт (32 hex)
+        if [ "$p" = "__OME_API_TOKEN__" ]; then
+            s="$(gen_secret 16)"
+        else
+            s="$(gen_secret)"
+        fi
         for file in "${SECRET_FILES[@]}"; do
             [ -f "$file" ] && sed -i "s/$p/$s/g" "$file"
         done

@@ -95,7 +95,7 @@
 			</Names>
 		</Host>
 		<API>
-			<AccessToken>0a43849a43c4cd394acaad794a46053a</AccessToken>
+			<AccessToken>__OME_API_TOKEN__</AccessToken>
 		</API>
 	</Managers>
 
