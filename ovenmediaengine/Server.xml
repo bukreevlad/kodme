@@ -50,6 +50,9 @@
 					<!-- IP dev-стенда -->
 					<IceCandidate>YOUR_PUBLIC_IP:10000-10003/udp</IceCandidate>
 					<IceCandidate>YOUR_PUBLIC_IP:10000/tcp</IceCandidate>
+					<!-- Внутренний шлюз сети app: контейнер kodme не достучится до публичного IP (хайрпин), порты проброшены на хост -->
+					<IceCandidate>10.90.0.1:10000-10003/udp</IceCandidate>
+					<IceCandidate>10.90.0.1:10000/tcp</IceCandidate>
 					<!-- TURN-relay OME: 3478 занят coturn стенда, используем 13478 -->
 					<TcpRelay>YOUR_PUBLIC_IP:13478</TcpRelay>
 					<TcpRelayForce>false</TcpRelayForce>
@@ -78,6 +81,9 @@
 				<IceCandidates>
 					<IceCandidate>YOUR_PUBLIC_IP:10000-10003/udp</IceCandidate>
 					<IceCandidate>YOUR_PUBLIC_IP:10000/tcp</IceCandidate>
+					<!-- Внутренний шлюз сети app: контейнер kodme не достучится до публичного IP (хайрпин), порты проброшены на хост -->
+					<IceCandidate>10.90.0.1:10000-10003/udp</IceCandidate>
+					<IceCandidate>10.90.0.1:10000/tcp</IceCandidate>
 					<TcpRelay>YOUR_PUBLIC_IP:13478</TcpRelay>
 					<TcpRelayForce>false</TcpRelayForce>
 					<TcpIceWorkerCount>1</TcpIceWorkerCount>

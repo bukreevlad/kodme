@@ -21,6 +21,7 @@ rtc_config:
   tcp_port: 7884
   udp_port: 7885
   use_external_ip: false       # Отключаем автоопределение через STUN
+  advertise_internal_ip: true   # + локальные кандидаты (серверный мост в контейнере не ходит на публичный IP хоста)
   # ⚠️ ПЛЕЙСХОЛДЕР: замените на публичный IP вашего сервера
   node_ip: "YOUR_PUBLIC_IP"     # Обязательно: без этого WebRTC не пройдёт NAT
   stun_servers:
