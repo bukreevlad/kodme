@@ -3,13 +3,15 @@
 Основной транспорт клиента — WebSocket-соединение с сервером.
 
 - URL: `wss://domain.ru/api/v1/wss/client`
-- Авторизация: access-токен передаётся при установке соединения (websocket-протокол `Sec-WebSocket-Protocol` / заголовок `Authorization`), см. [authentication.md](./authentication.md).
+- Авторизация: access-токен передаётся при установке соединения **только**
+  websocket-протоколом `Sec-WebSocket-Protocol` (значение токена — в access-логи
+  не попадает), см. [authentication.md](./authentication.md).
 - Если соединение не авторизовано — сервер закрывает его с кодом **1008** (`Authentication failed`).
 
 > Помимо клиентского соединения есть **выделенное соединение бота**
 > `wss://domain.ru/api/v1/wss/bot?botId=...`: секретный токен бота
-> передаётся заголовком `Sec-WebSocket-Protocol` (query-параметр
-> `?token=` устарел и не рекомендуется — query-строки попадают
+> передаётся тем же заголовком `Sec-WebSocket-Protocol` (единственный
+> способ — query-токены не принимаются, query-строки попадают
 > в access-логи) — см.
 > [bots-to-server](./websocket/bots-to-server/README.md).
 
