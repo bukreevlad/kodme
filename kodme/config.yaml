@@ -314,14 +314,24 @@ mailer:
     pass: ""
 
 # -----------------------------------------------------------------------------
-# 6. SRS (SIMPLE REALTIME SERVER - СТРИМИНГ МЕДИАПОТОКОВ)
+# 6. OVENMEDIAENGINE (МЕДИАСЕРВЕР ТРАНСЛЯЦИЙ)
 # -----------------------------------------------------------------------------
-srs:
-  # Сгенерировать безопасный секрет можно командой: openssl rand -hex 32
-  api_secret: "__SRS_API_SECRET__"
-  api_host: "http://srs"
-  api_port: 1985 # Стандартный HTTP API порт SRS сервера
-  api_vhost: "domain.ru" # Виртуальный хост - указан в srs/kodme.conf
+ovenmediaengine:
+  # HTTP API (REST): статистика потоков, управление push
+  api_host: "http://ovenmediaengine" # контейнер в compose-сети app
+  api_port: 8081 # Порт REST API (см. Server.xml: Bind/Managers/API)
+  # AccessToken для Basic-auth REST API (заголовок: Basic base64(<token>))
+  access_token: "__OME_API_TOKEN__"
+  # Секрет HMAC-SHA1 для проверки подписи AdmissionWebhooks (X-OME-Signature).
+  # Должен совпадать с <SecretKey> в ovenmediaengine/Server.xml
+  webhook_secret: "__OME_WEBHOOK_SECRET__"
+  # WebRTC-сигналинг (LL-HLS и WebRTC на одном порту)
+  webrtc_host: "http://ovenmediaengine" # контейнер в compose-сети app
+  webrtc_port: 3333
+  # Имя приложения в OME (сегмент URL: /live/<castId>)
+  app: "live"
+  # Имя виртуального хоста OME (см. Server.xml: VirtualHost/Name)
+  vhost: "default"
 
 # -----------------------------------------------------------------------------
 # 7. LIVEKIT (МЕДИАСЕРВЕР ДЛЯ КОНФЕРЕНЦИЙ)

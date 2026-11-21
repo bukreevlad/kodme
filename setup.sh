@@ -5,7 +5,7 @@
 # Делает два шага:
 #   1. Подставляет ваш домен во все конфиги (вместо domain.ru).
 #   2. Генерирует уникальные секреты вместо плейсхолдеров __ИМЯ__
-#      (пароли БД/Redis, JWT, TURN, S3, LiveKit, SRS).
+#      (пароли БД/Redis, JWT, TURN, S3, LiveKit, OME), а также публичный IP.
 #
 # Запускайте ДО первого `podman-compose up -d`: пароль PostgreSQL применяется
 # при первой инициализации базы (initdb) и позже автоматически не меняется.
@@ -25,6 +25,7 @@ SECRET_FILES=(
     "livekit/livekit.yaml"
     "livekit/ingress.yaml"
     "coturn/turnserver.conf"
+    "ovenmediaengine/Server.xml"
 )
 
 # --------------------------------------------------------------------------
@@ -104,7 +105,32 @@ else
 fi
 
 # ==========================================================================
-# 2. Секреты
+# 2. Публичный IP сервера (ICE-кандидаты OME и внешний адрес coturn)
+# ==========================================================================
+if grep -qs "YOUR_PUBLIC_IP" "${FILES[@]}" 2>/dev/null; then
+    PUBLIC_IP=""
+    read -rp "🌐 Публичный IP сервера (Enter — пропустить; WebRTC-трансляции потребуют ручной правки): " PUBLIC_IP
+    if [ -n "$PUBLIC_IP" ]; then
+        if ! echo "$PUBLIC_IP" | grep -qE '^([0-9]{1,3}\.){3}[0-9]{1,3}$'; then
+            echo "❌ Недопустимый IP: $PUBLIC_IP"
+            exit 1
+        fi
+        for file in "${FILES[@]}"; do
+            if grep -q "YOUR_PUBLIC_IP" "$file" 2>/dev/null; then
+                sed -i "s/YOUR_PUBLIC_IP/$PUBLIC_IP/g" "$file"
+            fi
+        done
+        echo "✅ Публичный IP подставлен: $PUBLIC_IP"
+    else
+        echo "ℹ️  IP не менялся — замените YOUR_PUBLIC_IP вручную:"
+        echo "   ovenmediaengine/Server.xml (ICE-кандидаты), coturn/turnserver.conf"
+    fi
+else
+    echo "ℹ️  Публичный IP уже настроен (YOUR_PUBLIC_IP не найден) — пропускаю."
+fi
+
+# ==========================================================================
+# 3. Секреты
 # ==========================================================================
 PLACEHOLDERS="$(grep -hoE '__[A-Z0-9_]+__' "${SECRET_FILES[@]}" 2>/dev/null | sort -u)"
 

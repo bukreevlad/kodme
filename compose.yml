@@ -22,19 +22,24 @@ services:
       - postgres-data:/var/lib/postgresql  # Папка для хранения данных БД
 
   # -----------------------------------
-  # 2. Сервис для SRS6
-  srs:
-    image: docker.io/ossrs/srs:6
-    container_name: srs
+  # Сервис для OvenMediaEngine (медиасервер трансляций: RTMP/WHIP вход, LL-HLS/WebRTC выход)
+  ovenmediaengine:
+    image: docker.io/ovenmedialabs/ovenmediaengine:latest
+    container_name: ovenmediaengine
     restart: always
-    mem_limit: 512m  # Лимит памяти
+    environment:
+      # Внешний IP для ICE-кандидатов (совпадает с candidate в Server.xml)
+      - OME_HOST_IP=YOUR_PUBLIC_IP
     ports:
-      - "1935:1935"                    # RTMP ingest (публичный)
-      - "8000:8000/udp"                # RTC (публичный)
-      - "8000:8000/tcp"                # RTC (публичный)
+      - "1935:1935"                       # RTMP ingest (публичный)
+      - "3333:3333"                       # LL-HLS + WebRTC-сигналинг (публичный)
+      - "127.0.0.1:8081:8081"             # REST API (только хост)
+      - "10000-10003:10000-10003/udp"     # WebRTC ICE (публичный)
+      - "10000:10000/tcp"                 # WebRTC ICE over TCP (публичный)
+      - "13478:13478/tcp"                 # TURN-relay OME (3478 занят coturn)
     volumes:
-      - ./srs/kodme.conf:/srs/trunk/conf/kodme.conf # Конфигурация srs
-    command: ./objs/srs -c /srs/trunk/conf/kodme.conf  # Запуск srs
+      - ./ovenmediaengine/Server.xml:/opt/ovenmediaengine/bin/origin_conf/Server.xml:Z
+      - ./ovenmediaengine/logs:/var/log/ovenmediaengine:Z
     networks:
       - app
 
@@ -166,7 +171,7 @@ services:
     image: docker.io/nginx:alpine
     container_name: nginx
     depends_on:
-      - srs
+      - ovenmediaengine
       - seaweedfs
     mem_limit: 256m  # Лимит памяти
     networks:

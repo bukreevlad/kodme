@@ -10,7 +10,7 @@
 [![Лицензия](https://img.shields.io/badge/лицензия-MIT-2ea44f)](LICENSE)
 [![Развертывание](https://img.shields.io/badge/развертывание-Docker%20%7C%20Podman-2496ed)](#-быстрый-старт)
 [![База данных](https://img.shields.io/badge/PostgreSQL-18-336791)](#-архитектура)
-[![Медиа](https://img.shields.io/badge/медиа-WebRTC%20%7C%20LiveKit%20%7C%20SRS-ff6b35)](#-архитектура)
+[![Медиа](https://img.shields.io/badge/медиа-WebRTC%20%7C%20LiveKit%20%7C%20OvenMediaEngine-ff6b35)](#-архитектура)
 [![API](https://img.shields.io/badge/API-документация-6f42c1)](#-документация-api)
 
 [**Возможности**](#-возможности) ·
@@ -66,7 +66,7 @@
 
 ### 🎥 Медиа и звонки
 
-- **Прямые трансляции** — эфиры через RTMP/WebRTC (SRS), чат трансляции,
+- **Прямые трансляции** — эфиры через RTMP/WebRTC (OvenMediaEngine), чат трансляции,
   просмотр из клиента.
 - **Видеоконференции** — групповые встречи на базе LiveKit с чатом и записью
   экрана.
@@ -109,19 +109,19 @@
 ```mermaid
 graph LR
     C[Клиенты<br/>браузер и приложения] -->|HTTPS · WSS| N[nginx]
-    C -->|RTMP / WebRTC| SRS[SRS<br/>трансляции]
+    C -->|RTMP / WebRTC| OME[OvenMediaEngine<br/>трансляции]
     C -->|WebRTC| LK[LiveKit<br/>звонки и конференции]
     C -->|TURN / STUN| TURN[coturn]
 
     N --> K[kodme<br/>сервер платформы]
     N --> S3[SeaweedFS<br/>S3-хранилище]
     N --> LK
-    N --> SRS
+    N --> OME
 
     K --> DB[(PostgreSQL)]
     K --> MW[kodme-media-worker]
     K --> LK
-    K --> SRS
+    K --> OME
     LK --> R[(Redis)]
 ```
 
@@ -134,7 +134,7 @@ graph LR
 | `redis` | `redis:7` | кэш и координация LiveKit |
 | `seaweedfs` | `seaweedfs` | объектное хранилище S3 (файлы, обложки, медиа) |
 | `livekit`, `livekit-ingress` | `livekit/*` | звонки и видеоконференции, захват внешних потоков |
-| `srs` | `ossrs/srs:6` | прямые трансляции (RTMP → WebRTC) |
+| `ovenmediaengine` | `ovenmedialabs/ovenmediaengine` | прямые трансляции (RTMP/WHIP → LL-HLS/WebRTC) |
 | `coturn` | `coturn/coturn` | TURN/STUN для звонков и конференций |
 
 Сети: `app` — приёмный сегмент (nginx и всё, к чему он проксирует);
@@ -152,8 +152,11 @@ graph LR
 | Порт | Протокол | Назначение |
 | --- | --- | --- |
 | `80`, `443` | TCP | HTTPS (nginx) — в `compose.yml` по умолчанию `9080/9443`, см. [быстрый старт](#-быстрый-старт) |
-| `1935` | TCP | RTMP — приём трансляций (SRS) |
-| `8000` | TCP/UDP | WebRTC-трансляции (SRS) |
+| `1935` | TCP | RTMP — приём трансляций (OvenMediaEngine) |
+| `3333` | TCP | LL-HLS и WebRTC-сигналинг (OvenMediaEngine) |
+| `10000–10003` | UDP | WebRTC ICE (OvenMediaEngine) |
+| `10000` | TCP | WebRTC ICE over TCP (OvenMediaEngine) |
+| `13478` | TCP | TURN-relay (OvenMediaEngine) |
 | `3478` | UDP | TURN (coturn) |
 | `5349` | TCP | TURN over TLS (coturn) |
 | `40000–49999` | UDP | relay-порты (coturn) |
@@ -167,13 +170,17 @@ graph LR
 
 > ⚠️ `setup.sh` выполняйте **до** первого запуска: пароль PostgreSQL
 > применяется при первой инициализации базы данных.
+> Скрипт также спросит **публичный IP сервера** — он подставляется в
+> ICE-кандидаты OME (`ovenmediaengine/Server.xml`) и `coturn`. Без него
+> RTMP и LL-HLS работают, а WebRTC-трансляции (WHIP/RTC) потребуют
+> ручной правки `YOUR_PUBLIC_IP`.
 
 ```bash
 # 1. Клонируйте репозиторий
 git clone <адрес-этого-репозитория>
 cd <папка-репозитория>
 
-# 2. Настройте домен и сгенерируйте секреты
+# 2. Настройте домен, IP сервера и сгенерируйте секреты
 ./setup.sh example.com
 
 # 3. Выпустите TLS-сертификаты (см. ниже) и положите в nginx/ssl/example.com/
@@ -223,7 +230,7 @@ Certbot продлевает сертификаты автоматически �
 | `kodme/config.yaml` | домен, почта (SMTP), push-уведомления, администраторы, включение модулей, лимиты, JWT |
 | `nginx/conf.d/` | домены, маршруты и проксирование |
 | `nginx/ssl/` | TLS-сертификаты (см. [«TLS-сертификаты»](#-tls-сертификаты)) |
-| `srs/kodme.conf` | трансляции (RTMP/WebRTC) |
+| `ovenmediaengine/Server.xml` | трансляции (конфиг медиасервера OME) |
 | `coturn/turnserver.conf` | TURN/STUN-сервер звонков |
 | `livekit/livekit.yaml`, `livekit/ingress.yaml` | конференции и захват потоков |
 | `compose.yml` | порты, лимиты памяти, состав сервисов |
@@ -244,7 +251,8 @@ Certbot продлевает сертификаты автоматически �
 | `__JWT_USERS_SECRET__` | `kodme/config.yaml` (`jwt.users.secret`) |
 | `__JWT_STORAGE_SECRET__` | `kodme/config.yaml` (`jwt.storage.secret`) |
 | `__JWT_BROADCASTS_SECRET__` | `kodme/config.yaml` (`jwt.broadcasts.secret`) |
-| `__SRS_API_SECRET__` | `kodme/config.yaml` (`srs.api_secret`) |
+| `__OME_API_TOKEN__` | `kodme/config.yaml` (`ovenmediaengine.access_token`) |
+| `__OME_WEBHOOK_SECRET__` | `kodme/config.yaml` (`ovenmediaengine.webhook_secret`) ↔ `ovenmediaengine/Server.xml` (`SecretKey`) |
 
 > 📌 TURN-секрет (`__TURN_SECRET__`) и секрет LiveKit (`__LIVEKIT_API_SECRET__`)
 > обязаны быть **разными** значениями.

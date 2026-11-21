@@ -1,6 +1,6 @@
 # broadcasts — трансляции
 
-События раздела `[broadcast]`. Трансляция связана с SRS (RTMP/RTC) и чатом на базе канала `kind: "cast_chat"`.
+События раздела `[broadcast]`. Трансляция связана с медиасервером (RTMP/WebRTC) и чатом на базе канала `kind: "cast_chat"`.
 Основной объект — [Broadcast](../../objects/broadcast.md).
 
 ## `[broadcast]: create` — создать трансляцию

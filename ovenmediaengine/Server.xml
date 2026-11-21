@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- OvenMediaEngine — медиасервер трансляций (дистрибутив). -->
+<Server version="8">
+	<Name>KodmeOvenMediaEngine</Name>
+	<Type>origin</Type>
+	<IP>*</IP>
+	<PrivacyProtection>false</PrivacyProtection>
+
+	<!-- ${PublicIP} резолвится через STUN; для dev-стенда используется прямой IP -->
+	<StunServer>stun.ovenmediaengine.com:13478</StunServer>
+
+	<Modules>
+		<!-- HTTP/2 работает только на TLS-портах; без сертификата остаёмся на HTTP/1.1 -->
+		<HTTP2>
+			<Enable>false</Enable>
+		</HTTP2>
+		<LLHLS>
+			<Enable>true</Enable>
+		</LLHLS>
+		<P2P>
+			<Enable>false</Enable>
+		</P2P>
+		<TaskPool>
+			<ThreadCount>4</ThreadCount>
+			<MaxTasks>128</MaxTasks>
+		</TaskPool>
+	</Modules>
+
+	<Bind>
+		<!-- REST API: статистика потоков, управление push (порт 8081) -->
+		<Managers>
+			<API>
+				<Port>8081</Port>
+				<WorkerCount>1</WorkerCount>
+			</API>
+		</Managers>
+
+		<Providers>
+			<!-- Приём публикаций из OBS: rtmp://host:1935/live/<castId> -->
+			<RTMP>
+				<Port>1935</Port>
+				<WorkerCount>1</WorkerCount>
+			</RTMP>
+			<WebRTC>
+				<Signalling>
+					<Port>3333</Port>
+					<WorkerCount>1</WorkerCount>
+				</Signalling>
+				<IceCandidates>
+					<!-- IP dev-стенда -->
+					<IceCandidate>YOUR_PUBLIC_IP:10000-10003/udp</IceCandidate>
+					<IceCandidate>YOUR_PUBLIC_IP:10000/tcp</IceCandidate>
+					<!-- TURN-relay OME: 3478 занят coturn стенда, используем 13478 -->
+					<TcpRelay>YOUR_PUBLIC_IP:13478</TcpRelay>
+					<TcpRelayForce>false</TcpRelayForce>
+					<TcpIceWorkerCount>1</TcpIceWorkerCount>
+					<TcpRelayWorkerCount>1</TcpRelayWorkerCount>
+				</IceCandidates>
+			</WebRTC>
+		</Providers>
+
+		<Publishers>
+			<!-- LL-HLS: http://host:3333/live/<castId>/abr.m3u8 -->
+			<LLHLS>
+				<Port>3333</Port>
+				<WorkerCount>1</WorkerCount>
+			</LLHLS>
+			<!-- Превью карточек трансляций: http://host:3333/live/<castId>/thumb.jpg -->
+			<Thumbnail>
+				<Port>3333</Port>
+				<WorkerCount>1</WorkerCount>
+			</Thumbnail>
+			<WebRTC>
+				<Signalling>
+					<Port>3333</Port>
+					<WorkerCount>1</WorkerCount>
+				</Signalling>
+				<IceCandidates>
+					<IceCandidate>YOUR_PUBLIC_IP:10000-10003/udp</IceCandidate>
+					<IceCandidate>YOUR_PUBLIC_IP:10000/tcp</IceCandidate>
+					<TcpRelay>YOUR_PUBLIC_IP:13478</TcpRelay>
+					<TcpRelayForce>false</TcpRelayForce>
+					<TcpIceWorkerCount>1</TcpIceWorkerCount>
+					<TcpRelayWorkerCount>1</TcpRelayWorkerCount>
+				</IceCandidates>
+			</WebRTC>
+		</Publishers>
+	</Bind>
+
+	<!-- AccessToken для REST API: Basic base64(<AccessToken>) -->
+	<Managers>
+		<Host>
+			<Names>
+				<Name>*</Name>
+			</Names>
+		</Host>
+		<API>
+			<AccessToken>0a43849a43c4cd394acaad794a46053a</AccessToken>
+		</API>
+	</Managers>
+
+	<Defaults>
+		<CrossDomains>
+			<Url>*</Url>
+		</CrossDomains>
+	</Defaults>
+
+	<VirtualHosts>
+		<VirtualHost>
+			<Name>default</Name>
+			<Host>
+				<Names>
+					<Name>*</Name>
+				</Names>
+			</Host>
+
+			<!-- Авторизация публикации/просмотра: единый AdmissionWebhooks endpoint.
+			     Публикация и чтение проверяются сервером kodme (токены трансляций):
+			     ответ {"allowed": true} — разрешить, иначе отказ. -->
+			<AdmissionWebhooks>
+				<ControlServerUrl>http://kodme:3000/api/v1/cast/hooks/admission</ControlServerUrl>
+				<SecretKey>__OME_WEBHOOK_SECRET__</SecretKey>
+				<Timeout>3000</Timeout>
+				<Enables>
+					<Providers>rtmp,webrtc</Providers>
+					<Publishers>webrtc,llhls,thumbnail</Publishers>
+				</Enables>
+			</AdmissionWebhooks>
+
+			<Applications>
+				<Application>
+					<!-- Имя приложения = app в URL (live/<castId>) -->
+					<Name>live</Name>
+					<Type>live</Type>
+
+					<OutputProfiles>
+						<Decodes>
+							<ThreadCount>2</ThreadCount>
+							<OnlyKeyframes>false</OnlyKeyframes>
+						</Decodes>
+
+						<OutputProfile>
+							<Name>kodme_abr</Name>
+							<OutputStreamName>${OriginStreamName}</OutputStreamName>
+
+							<!-- LL-HLS с ABR: http://host:3333/live/<castId>/abr.m3u8 -->
+							<Playlist>
+								<Name>abr</Name>
+								<FileName>abr</FileName>
+								<Options>
+									<WebRtcAutoAbr>false</WebRtcAutoAbr>
+									<EnableTsPackaging>true</EnableTsPackaging>
+								</Options>
+								<!-- Рендеринги собираются из того, что реально есть в потоке: слои simulcast либо единственный слой RTMP, без перекода. -->
+								<RenditionTemplate>
+									<Name>${Height}p</Name>
+									<VideoTemplate>
+										<EncodingType>bypassed</EncodingType>
+									</VideoTemplate>
+									<AudioTemplate>
+										<VariantName>aac_audio</VariantName>
+									</AudioTemplate>
+								</RenditionTemplate>
+								</Playlist>
+
+							<!-- WebRTC с ABR: ws://host:3333/live/<castId>/abr -->
+							<Playlist>
+								<Name>rtc</Name>
+								<FileName>rtc</FileName>
+								<Options>
+									<!-- false: всегда отдавать source (оригинал публикатора).
+									     Диагностика «кто занижает качество: ABR или канал».
+									     Вернуть true после проверки. -->
+									<WebRtcAutoAbr>false</WebRtcAutoAbr>
+								</Options>
+								<!-- Рендеринги собираются из того, что реально есть в потоке: слои simulcast либо единственный слой RTMP, без перекода. -->
+								<RenditionTemplate>
+									<Name>${Height}p</Name>
+									<VideoTemplate>
+										<EncodingType>bypassed</EncodingType>
+									</VideoTemplate>
+									<AudioTemplate>
+										<VariantName>opus_audio</VariantName>
+									</AudioTemplate>
+								</RenditionTemplate>
+								</Playlist>
+
+							<Encodes>
+								<!-- Оригинал без перекода: единственный видео-трек -->
+								<Video>
+									<Name>bypass_video</Name>
+									<Bypass>true</Bypass>
+								</Video>
+								<!-- AAC для LL-HLS: перекод только если вход не AAC -->
+								<Audio>
+									<Name>aac_audio</Name>
+									<Codec>aac</Codec>
+									<Bitrate>128000</Bitrate>
+									<Samplerate>48000</Samplerate>
+									<Channel>2</Channel>
+									<BypassIfMatch>
+										<Codec>eq</Codec>
+									</BypassIfMatch>
+								</Audio>
+								<!-- Opus для WebRTC: обязателен, Chrome AAC не принимает -->
+								<Audio>
+									<Name>opus_audio</Name>
+									<Codec>opus</Codec>
+									<Bitrate>128000</Bitrate>
+									<Samplerate>48000</Samplerate>
+									<Channel>2</Channel>
+								</Audio>
+								<!-- Превью для hover-карточек трансляций (1 кадр/с) -->
+								<Image>
+									<Codec>jpeg</Codec>
+									<Framerate>1</Framerate>
+									<Width>854</Width>
+									<Height>480</Height>
+								</Image>
+							</Encodes>
+						</OutputProfile>
+					</OutputProfiles>
+
+					<Providers>
+						<RTMP />
+						<WebRTC>
+							<Timeout>30000</Timeout>
+							<CrossDomains>
+								<Url>*</Url>
+							</CrossDomains>
+						</WebRTC>
+					</Providers>
+
+					<Publishers>
+						<AppWorkerCount>1</AppWorkerCount>
+						<StreamWorkerCount>8</StreamWorkerCount>
+						<!-- Превью карточек трансляций: /live/<castId>/thumb.jpg
+						     (порт задан в Bind/Publishers/Thumbnail) -->
+						<Thumbnail>
+							<CrossDomains>
+								<Url>*</Url>
+							</CrossDomains>
+						</Thumbnail>
+						<WebRTC>
+							<Timeout>30000</Timeout>
+							<!-- RTX/ULPFEC: защита от потерь пакетов. Без них
+							     любая потеря даёт артефакты, а OME занижает
+							     оценку канала и держит низкий рендеринг ABR -->
+							<Rtx>true</Rtx>
+							<Ulpfec>true</Ulpfec>
+							<!-- Буфер сглаживает дрожание сетевой задержки -->
+							<JitterBuffer>true</JitterBuffer>
+							<CreateDefaultPlaylist>true</CreateDefaultPlaylist>
+						</WebRTC>
+						<LLHLS>
+							<!-- Частичные сегменты 0.2с — рекомендованный минимум LL-HLS -->
+							<ChunkDuration>0.2</ChunkDuration>
+							<!-- PartHoldBack ≥ 3 × ChunkDuration -->
+							<PartHoldBack>0.6</PartHoldBack>
+							<SegmentDuration>2</SegmentDuration>
+							<SegmentCount>10</SegmentCount>
+							<CrossDomains>
+								<Url>*</Url>
+							</CrossDomains>
+							<CreateDefaultPlaylist>true</CreateDefaultPlaylist>
+						</LLHLS>
+						<!-- Запись потока на диск (выключена; включается по необходимости) -->
+						<FILE>
+							<RootPath>/var/lib/ovenmediaengine/recordings</RootPath>
+							<StreamMap>
+								<Enable>false</Enable>
+							</StreamMap>
+						</FILE>
+					</Publishers>
+				</Application>
+			</Applications>
+		</VirtualHost>
+	</VirtualHosts>
+</Server>
