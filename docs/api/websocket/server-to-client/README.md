@@ -45,7 +45,7 @@ Push-кадры не имеют `callbackId` и не требуют ответа
 | `[comment-member]: update last viewed comment` | [comments-members.md](./comments-members.md) |
 | `[channel-member]: typing status`, `[channel-member]: update last viewed message`, `[channel-member]: update participant viewed message` | [channels-members.md](./channels-members.md) |
 | `[user]: online status` | [users.md](./users.md) |
-| `[user]: feed` — личная лента событий (каналы появились/исчезли) | [users.md](./users.md) |
+| `[user]: feed` — личная лента событий (каналы, профиль, папки) | [users.md](./users.md) |
 | `[broadcast]: update` | [broadcasts.md](./broadcasts.md) |
 | `[meet]: user enter`, `[meet]: user exit` | [meets.md](./meets.md) |
 | `[call]: incoming` / `[call]: declined` | [calls.md](./calls.md) |
